@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Григорий Сапожников](https://up.htmlacademy.ru/ecmascript/16/user/1327065).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Андреев](https://up.htmlacademy.ru/ecmascript/16/user/812127).
 
 ---
 
