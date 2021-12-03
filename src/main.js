@@ -4,6 +4,7 @@ import {createHeaderProfileTemplate} from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
 import {createSortTemplate} from './view/sort-view';
 import {createFilmsListTemplate} from './view/films-list-view';
+import {createFilmCardTemplate} from './view/film-card-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 
@@ -21,6 +22,14 @@ renderTemplate(siteMainElement, createMainNavigationTemplate(), RenderPosition.A
 
 // content
 renderTemplate(filmsElement, createFilmsListTemplate(), RenderPosition.AFTERBEGIN);
+
+const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
+renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+
 renderTemplate(filmsElement, createFilmsListExtraTemplate(), RenderPosition.BEFOREEND);
 
 // footer
