@@ -4,6 +4,7 @@ import {createHeaderProfileTemplate} from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
 import {createSortTemplate} from './view/sort-view';
 import {createFilmsListTemplate} from './view/films-list-view';
+import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -18,3 +19,4 @@ renderTemplate(siteMainElement, createMainNavigationTemplate(), RenderPosition.A
 
 // content
 renderTemplate(filmsElement, createFilmsListTemplate(), RenderPosition.AFTERBEGIN);
+renderTemplate(filmsElement, createFilmsListExtraTemplate(), RenderPosition.BEFOREEND);
