@@ -6,6 +6,5 @@ export const createFilmsListTemplate = () => (
 
       </div>
 
-      <button class="films-list__show-more">Show more</button>
     </section>`
 );
