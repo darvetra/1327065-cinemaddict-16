@@ -3,7 +3,7 @@ import {renderTemplate, RenderPosition} from './render.js';
 import {createHeaderProfileTemplate} from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
 import {createSortTemplate} from './view/sort-view';
-import {createFilmsListTemplate} from './view/films-list-view';
+import {createFilmsTemplate} from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
 import {createShowMoreButtonTemplate} from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
@@ -14,7 +14,6 @@ const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
-const filmsElement = siteMainElement.querySelector('.films');
 
 // header
 renderTemplate(siteHeaderElement, createHeaderProfileTemplate(), RenderPosition.BEFOREEND);
@@ -25,9 +24,11 @@ renderTemplate(siteMainElement, createMainNavigationTemplate(), RenderPosition.A
 
 // content
 // films list
-renderTemplate(filmsElement, createFilmsListTemplate(), RenderPosition.AFTERBEGIN);
+renderTemplate(siteMainElement, createFilmsTemplate(), RenderPosition.BEFOREEND);
 
+const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
+
 renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
@@ -45,4 +46,4 @@ renderTemplate(filmsElement, createFilmsListExtraTemplate(), RenderPosition.BEFO
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), RenderPosition.AFTERBEGIN);
 
 // popup
-renderTemplate(bodyElement, createFilmDetailsTemplate(), RenderPosition.BEFOREEND);
+// renderTemplate(bodyElement, createFilmDetailsTemplate(), RenderPosition.BEFOREEND);
