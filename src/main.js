@@ -16,7 +16,7 @@ const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
 // header
-renderTemplate(siteHeaderElement, createHeaderProfileTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(siteHeaderElement, createHeaderProfileTemplate());
 
 // sort & menu
 renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.AFTERBEGIN);
@@ -24,26 +24,26 @@ renderTemplate(siteMainElement, createMainNavigationTemplate(), RenderPosition.A
 
 // content
 // films list
-renderTemplate(siteMainElement, createFilmsTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(siteMainElement, createFilmsTemplate());
 
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
-renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(filmsListContainerElement, createFilmCardTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+renderTemplate(filmsListContainerElement, createFilmCardTemplate());
 
 // show more buttton
 const filmsListElement = filmsElement.querySelector('.films-list');
-renderTemplate(filmsListElement, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsListElement, createShowMoreButtonTemplate());
 
 // extra films
-renderTemplate(filmsElement, createFilmsListExtraTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(filmsElement, createFilmsListExtraTemplate());
 
 // footer
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), RenderPosition.AFTERBEGIN);
 
 // popup
-renderTemplate(bodyElement, createFilmDetailsTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(bodyElement, createFilmDetailsTemplate());
