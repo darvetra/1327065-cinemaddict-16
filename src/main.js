@@ -46,4 +46,4 @@ renderTemplate(filmsElement, createFilmsListExtraTemplate(), RenderPosition.BEFO
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), RenderPosition.AFTERBEGIN);
 
 // popup
-// renderTemplate(bodyElement, createFilmDetailsTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(bodyElement, createFilmDetailsTemplate(), RenderPosition.BEFOREEND);
