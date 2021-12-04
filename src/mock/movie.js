@@ -1,0 +1,158 @@
+const MAXIMUM_NUMBER_OF_SENTENCES = 5;
+const MAXIMUM_NUMBER_OF_COMMENTS = 5;
+
+/**
+ * Функция из интернета по генерации случайного числа из диапазона
+ * Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+const getRandomInteger = (a = 0, b = 1) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+
+  return Math.floor(lower + Math.random() * (upper - lower + 1));
+};
+
+/**
+ * Функция, возвращающая случайное целое число из переданного диапазона включительно.
+ * Результат: целое число из диапазона "от...до".
+ * Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+ *
+ * @param min - минимальное значекние диапозона
+ * @param max - максимальное значение диапозона
+ */
+const getRandomIntInclusive = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  if (min >= max) {
+    return 'Введены неверные значения';
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+};
+
+const generateMovieTitle = () => {
+  const movieTitles = [
+    'The Dance of Life',
+    'Sagebrush Trail',
+    'The Man with the Golden Arm',
+    'Santa Claus Conquers the Martians',
+    'Popeye the Sailor Meets Sindbad the Sailor',
+    'The Great Flamarion',
+    'Made for Each Other',
+  ];
+
+  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
+
+  return movieTitles[randomIndex];
+};
+
+/**
+ * Генерирует моковые данные описания для карточки фильма
+ * @returns {string}
+ */
+const generateDescription = () => {
+  const descriptions = [
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    'Cras aliquet varius magna, non porta ligula feugiat eget.',
+    'Fusce tristique felis at fermentum pharetra.',
+    'Aliquam id orci ut lectus varius viverra.',
+    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+    'Sed sed nisi sed augue convallis suscipit in sed felis.',
+    'Aliquam erat volutpat.',
+    'Nunc fermentum tortor ac porta dapibus.',
+    'In rutrum ac purus sit amet tempus.',
+  ];
+
+  const sentenceNumbers = getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_SENTENCES);
+  const createDescription = (length) => {
+    const result = [];
+    for (let i = 1; i <= length; i++) {
+      result.push(descriptions[getRandomIntInclusive(0, descriptions.length - 1)]);
+    }
+    return result.join(' ');
+  };
+
+  return createDescription(sentenceNumbers);
+};
+
+/**
+ * Генерирует моковые данные комментариев для карточки фильма
+ * @returns {{}}
+ */
+const generateComment = () => {
+  const emotions = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry'
+  ];
+  const authors = [
+    'Joseph DeMaio',
+    'Arnold Alois Schwarzenegger',
+    'Michael Sylvester Gardenzio Stallone',
+    'Luke Skywalker'
+  ];
+  const comments = [
+    'Brothers I am calling from the valley of the kings With nothing to atone',
+    'A dark march lies ahead, together we will ride Like thunder from the sky',
+    'May your sword stay wet like a young girl in her prime',
+    'Power and dominion are taken by the will'
+  ];
+
+  return {
+    id: 42,
+    author: authors[getRandomIntInclusive(0, emotions.length - 1)],
+    comment: comments[getRandomIntInclusive(0, emotions.length - 1)],
+    date: '2019-05-11T16:12:32.554Z',
+    emotion: emotions[getRandomIntInclusive(0, emotions.length - 1)],
+  };
+};
+
+
+/**
+ * Генерирует моковые даныне карточки фильма
+ * @returns {{filmInfo: {actors: string[], director: string, release: {date: string, releaseCountry: string}, genre: string[], totalRating: number, runtime: number, description: string, ageRating: number, writers: string[], title: string, poster: string}, id: number}}
+ */
+export const generateMovie = () => ({
+  id: 0,
+  comments: new Array(getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_COMMENTS)).fill().map(() => generateComment()),
+  filmInfo: {
+    title: generateMovieTitle(),
+    // Оставить, на будущее для понимания структуры данных
+    // alternative_title: '',
+    totalRating: 5.3,
+    poster: 'images/posters/blue-blazes.jpg',
+    ageRating: 0,
+    director: 'Tom Ford',
+    writers: [
+      'Takeshi Kitano'
+    ],
+    actors: [
+      'Morgan Freeman'
+    ],
+    release: {
+      date: '2019-05-11T00:00:00.000Z',
+      releaseCountry: 'Finland',
+    },
+    runtime: 77,
+    genre: [
+      'Comedy'
+    ],
+    description: generateDescription(),
+  },
+  // Оставить, на будущее для понимания структуры данных
+  // userDetails: {
+  //   watchlist: false,
+  //   alreadyWatched: true,
+  //   watchingDate: '2019-04-12T16:12:32.554Z',
+  //   favorite: false,
+  // },
+});
+
+// eslint-disable-next-line no-console
+console.log(generateMovie());
+

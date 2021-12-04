@@ -8,7 +8,9 @@ import {createFilmCardTemplate} from './view/film-card-view';
 import {createShowMoreButtonTemplate} from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
-import {createFilmDetailsTemplate} from './view/film-details-view';
+// import {createFilmDetailsTemplate} from './view/film-details-view';
+
+import './mock/movie.js';
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -46,4 +48,4 @@ renderTemplate(filmsElement, createFilmsListExtraTemplate());
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), RenderPosition.AFTERBEGIN);
 
 // popup
-renderTemplate(bodyElement, createFilmDetailsTemplate());
+// renderTemplate(bodyElement, createFilmDetailsTemplate());
