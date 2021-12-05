@@ -1,5 +1,8 @@
+import dayjs from 'dayjs';
+
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 const MAXIMUM_NUMBER_OF_COMMENTS = 5;
+const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
 
 /**
  * Функция из интернета по генерации случайного числа из диапазона
@@ -30,6 +33,16 @@ const getRandomIntInclusive = (min, max) => {
     return 'Введены неверные значения';
   }
   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+};
+
+/**
+ * Генерирует случайную дату и время в прошлом, в пределах заданного периода в секундах
+ * @returns {Date}
+ */
+export const generateDate = (gap) => {
+  const secondGap = getRandomInteger(-gap, 0);
+
+  return dayjs().add(secondGap, 'second').toDate();
 };
 
 const generateMovieTitle = () => {
@@ -105,9 +118,9 @@ const generateComment = () => {
 
   return {
     id: 42,
-    author: authors[getRandomIntInclusive(0, emotions.length - 1)],
-    comment: comments[getRandomIntInclusive(0, emotions.length - 1)],
-    date: '2019-05-11T16:12:32.554Z',
+    author: authors[getRandomIntInclusive(0, authors.length - 1)],
+    comment: comments[getRandomIntInclusive(0, comments.length - 1)],
+    date: generateDate(MAXIMUM_GAP_OF_TIME),
     emotion: emotions[getRandomIntInclusive(0, emotions.length - 1)],
   };
 };
