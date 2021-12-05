@@ -81,6 +81,21 @@ const generateDirector = () => {
 };
 
 /**
+ * Генерирует страну
+ * @returns {string}
+ */
+const generateCountry = () => {
+  const movieTitles = [
+    'Finland',
+    'USA',
+    'Russia',
+    'Poland',
+  ];
+  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
+  return movieTitles[randomIndex];
+};
+
+/**
  * Генерирует моковые данные обложки фильма
  * @returns {string}
  */
@@ -222,7 +237,7 @@ export const generateMovie = () => ({
     actors: generateArrayTemplate(actorsTemplate, MAXIMUM_NUMBER_OF_ACTORS),
     release: {
       date: generateDate(ONE_HUNDRED_YEARS),
-      releaseCountry: 'Finland',
+      releaseCountry: generateCountry(),
     },
     runtime: getRandomInteger(59, 180),
     genre: generateArrayTemplate(genresTemplate, MAXIMUM_NUMBER_OF_GENRES),
