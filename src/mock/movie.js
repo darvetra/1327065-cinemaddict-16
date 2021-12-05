@@ -157,6 +157,7 @@ const generateComment = () => {
   ];
   const authors = [
     'Joseph DeMaio',
+    'Eric Adams',
     'Arnold Alois Schwarzenegger',
     'Michael Sylvester Gardenzio Stallone',
     'Luke Skywalker'
@@ -164,8 +165,12 @@ const generateComment = () => {
   const comments = [
     'Brothers I am calling from the valley of the kings With nothing to atone',
     'A dark march lies ahead, together we will ride Like thunder from the sky',
-    'May your sword stay wet like a young girl in her prime',
-    'Power and dominion are taken by the will'
+    'May your sword stay wet like a young girl in her prime Hold your hammers high',
+    'Blood and death are waiting like a raven in the sky',
+    'I was born to die Hear me while I live',
+    'As I look into your eyes None shall hear a lie',
+    'Power and dominion are taken by the will',
+    'By divine right hail and kill'
   ];
 
   return {
@@ -227,8 +232,7 @@ export const generateMovie = () => ({
   comments: new Array(getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_COMMENTS)).fill().map(() => generateComment()),
   filmInfo: {
     title: generateMovieTitle(),
-    // Оставить, на будущее для понимания структуры данных
-    // alternative_title: '',
+    alternativeTitle: generateMovieTitle(),
     totalRating: getRandomInteger(0, 10),
     poster: generatePoster(),
     ageRating: getRandomInteger(0, 21),

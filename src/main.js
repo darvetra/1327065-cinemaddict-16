@@ -1,4 +1,4 @@
-import {renderTemplate, RenderPosition} from './render.js';
+import {renderTemplate, RenderPosition} from './utils/render.js';
 
 import {createHeaderProfileTemplate} from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
@@ -8,7 +8,7 @@ import {createFilmCardTemplate} from './view/film-card-view';
 import {createShowMoreButtonTemplate} from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
-// import {createFilmDetailsTemplate} from './view/film-details-view';
+import {createFilmDetailsTemplate} from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
 
@@ -39,7 +39,7 @@ for (let i = 0; i < MOVIE_COUNT; i++) {
   renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
 }
 
-// show more buttton
+// show more button
 const filmsListElement = filmsElement.querySelector('.films-list');
 renderTemplate(filmsListElement, createShowMoreButtonTemplate());
 
@@ -50,7 +50,7 @@ renderTemplate(filmsElement, createFilmsListExtraTemplate());
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), RenderPosition.AFTERBEGIN);
 
 // popup
-// renderTemplate(bodyElement, createFilmDetailsTemplate());
+renderTemplate(bodyElement, createFilmDetailsTemplate(movies[0]));
 
 // eslint-disable-next-line no-console
 console.log(movies);

@@ -1,11 +1,11 @@
-import {convertYearDate} from '../utils';
+import {convertYearDate} from '../utils/date';
 
 export const createFilmCardTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
 
   const title = filmInfo.title;
   const totalRating = filmInfo.totalRating;
-  const release = convertYearDate(filmInfo.release.date);
+  const releaseDate = convertYearDate(filmInfo.release.date);
   const runtime = filmInfo.runtime;
   const genre = filmInfo.genre.slice(0, 1);
   const poster = filmInfo.poster;
@@ -29,7 +29,7 @@ export const createFilmCardTemplate = (movie = {}) => {
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${release}</span>
+        <span class="film-card__year">${releaseDate}</span>
         <span class="film-card__duration">${runtime}m</span>
         <span class="film-card__genre">${genre}</span>
       </p>
