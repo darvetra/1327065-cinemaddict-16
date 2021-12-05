@@ -117,7 +117,7 @@ const generateComment = () => {
   ];
 
   return {
-    id: 42,
+    id: getRandomInteger(0, 42),
     author: authors[getRandomIntInclusive(0, authors.length - 1)],
     comment: comments[getRandomIntInclusive(0, comments.length - 1)],
     date: generateDate(MAXIMUM_GAP_OF_TIME),
@@ -131,15 +131,15 @@ const generateComment = () => {
  * @returns {{filmInfo: {actors: string[], director: string, release: {date: string, releaseCountry: string}, genre: string[], totalRating: number, runtime: number, description: string, ageRating: number, writers: string[], title: string, poster: string}, id: number}}
  */
 export const generateMovie = () => ({
-  id: 0,
+  id: getRandomInteger(0, 42),
   comments: new Array(getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_COMMENTS)).fill().map(() => generateComment()),
   filmInfo: {
     title: generateMovieTitle(),
     // Оставить, на будущее для понимания структуры данных
     // alternative_title: '',
-    totalRating: 5.3,
+    totalRating: getRandomInteger(0, 10),
     poster: 'images/posters/blue-blazes.jpg',
-    ageRating: 0,
+    ageRating: getRandomInteger(0, 21),
     director: 'Tom Ford',
     writers: [
       'Takeshi Kitano'
