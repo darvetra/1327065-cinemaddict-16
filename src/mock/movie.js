@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 const MAXIMUM_NUMBER_OF_COMMENTS = 5;
+const MAXIMUM_NUMBER_OF_GENRES = 3;
 const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
 const ONE_HUNDRED_YEARS = 60 * 60 * 24 * 365 * 100; // 100 лет в секундах
 
@@ -126,6 +127,31 @@ const generateComment = () => {
   };
 };
 
+/**
+ * Генерирует моковые данные жанров с фильмами
+ * @returns {*[]}
+ */
+const generateGenres = () => {
+  const genresTemplate = [
+    'Action',
+    'Drama',
+    'Film-Noir',
+    'Mystery',
+    'Cartoon',
+    'Comedy',
+    'Musical',
+    'Western',
+  ];
+
+  const genresNumbers = getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_GENRES);
+  const genres = [];
+  for (let i = 0; i < genresNumbers; i++) {
+    genres[i] = genresTemplate[getRandomIntInclusive(0, genresTemplate.length - 1)];
+  }
+
+  return genres;
+};
+
 
 /**
  * Генерирует моковые даныне карточки фильма
@@ -153,9 +179,7 @@ export const generateMovie = () => ({
       releaseCountry: 'Finland',
     },
     runtime: getRandomInteger(59, 180),
-    genre: [
-      'Comedy'
-    ],
+    genre: generateGenres(),
     description: generateDescription(),
   },
   userDetails: {
