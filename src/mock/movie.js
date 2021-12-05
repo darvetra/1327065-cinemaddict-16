@@ -43,12 +43,16 @@ const getRandomIntInclusive = (min, max) => {
  * Генерирует случайную дату и время в прошлом, в пределах заданного периода в секундах
  * @returns {Date}
  */
-export const generateDate = (gap) => {
+const generateDate = (gap) => {
   const secondGap = getRandomInteger(-gap, 0);
 
   return dayjs().add(secondGap, 'second').toDate();
 };
 
+/**
+ * Генерирует название фильма
+ * @returns {string}
+ */
 const generateMovieTitle = () => {
   const movieTitles = [
     'The Dance of Life',
@@ -59,9 +63,20 @@ const generateMovieTitle = () => {
     'The Great Flamarion',
     'Made for Each Other',
   ];
-
   const randomIndex = getRandomInteger(0, movieTitles.length - 1);
+  return movieTitles[randomIndex];
+};
 
+/**
+ * Генерирует имя режиссера
+ * @returns {string}
+ */
+const generateDirector = () => {
+  const movieTitles = [
+    'Anthony Mann',
+    'Tom Ford',
+  ];
+  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
   return movieTitles[randomIndex];
 };
 
@@ -170,7 +185,6 @@ const generateArrayTemplate = (arrayTemplate, number) => {
   return array;
 };
 
-
 /**
  * Генерирует моковые даныне карточки фильма
  * @returns {{filmInfo: {actors: string[], director: string, release: {date: string, releaseCountry: string}, genre: string[], totalRating: number, runtime: number, description: string, ageRating: number, writers: string[], title: string, poster: string}, id: number}}
@@ -185,7 +199,7 @@ export const generateMovie = () => ({
     totalRating: getRandomInteger(0, 10),
     poster: 'images/posters/blue-blazes.jpg',
     ageRating: getRandomInteger(0, 21),
-    director: 'Tom Ford',
+    director: generateDirector(),
     writers: generateArrayTemplate(writersTemplate, MAXIMUM_NUMBER_OF_WRITERS),
     actors: generateArrayTemplate(actorsTemplate, MAXIMUM_NUMBER_OF_ACTORS),
     release: {
@@ -206,4 +220,3 @@ export const generateMovie = () => ({
 
 // eslint-disable-next-line no-console
 console.log(generateMovie());
-
