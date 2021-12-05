@@ -12,6 +12,8 @@ import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 
 import './mock/movie.js';
 
+const MOVIE_COUNT = 5;
+
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
@@ -31,11 +33,9 @@ renderTemplate(siteMainElement, createFilmsTemplate());
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
-renderTemplate(filmsListContainerElement, createFilmCardTemplate());
-renderTemplate(filmsListContainerElement, createFilmCardTemplate());
-renderTemplate(filmsListContainerElement, createFilmCardTemplate());
-renderTemplate(filmsListContainerElement, createFilmCardTemplate());
-renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+for (let i = 0; i < MOVIE_COUNT; i++) {
+  renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+}
 
 // show more buttton
 const filmsListElement = filmsElement.querySelector('.films-list');
