@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 const MAXIMUM_NUMBER_OF_COMMENTS = 5;
 const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
+const ONE_HUNDRED_YEARS = 60 * 60 * 24 * 365 * 100; // 100 лет в секундах
 
 /**
  * Функция из интернета по генерации случайного числа из диапазона
@@ -148,10 +149,10 @@ export const generateMovie = () => ({
       'Morgan Freeman'
     ],
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: generateDate(ONE_HUNDRED_YEARS),
       releaseCountry: 'Finland',
     },
-    runtime: 77,
+    runtime: getRandomInteger(59, 180),
     genre: [
       'Comedy'
     ],
@@ -160,7 +161,7 @@ export const generateMovie = () => ({
   userDetails: {
     watchlist: Boolean(getRandomInteger(0, 1)),
     alreadyWatched: Boolean(getRandomInteger(0, 1)),
-    watchingDate: '2019-04-12T16:12:32.554Z',
+    watchingDate: generateDate(MAXIMUM_GAP_OF_TIME),
     favorite: Boolean(getRandomInteger(0, 1)),
   },
 });
