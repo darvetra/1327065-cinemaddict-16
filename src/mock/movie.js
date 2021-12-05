@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
 
+import {getRandomDecimalInclusive, getRandomInteger, getRandomIntInclusive} from '../utils/common';
+
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 const MAXIMUM_NUMBER_OF_COMMENTS = 5;
 const MAXIMUM_NUMBER_OF_GENRES = 3;
@@ -7,37 +9,6 @@ const MAXIMUM_NUMBER_OF_WRITERS = 2;
 const MAXIMUM_NUMBER_OF_ACTORS = 3;
 const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
 const ONE_HUNDRED_YEARS = 60 * 60 * 24 * 365 * 100; // 100 лет в секундах
-
-/**
- * Функция из интернета по генерации случайного числа из диапазона
- * Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
- * @param a
- * @param b
- * @returns {number}
- */
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-/**
- * Функция, возвращающая случайное целое число из переданного диапазона включительно.
- * Результат: целое число из диапазона "от...до".
- * Источник: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
- *
- * @param min - минимальное значекние диапозона
- * @param max - максимальное значение диапозона
- */
-const getRandomIntInclusive = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  if (min >= max) {
-    return 'Введены неверные значения';
-  }
-  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
-};
 
 /**
  * Генерирует случайную дату и время в прошлом, в пределах заданного периода в секундах
@@ -233,7 +204,7 @@ export const generateMovie = () => ({
   filmInfo: {
     title: generateMovieTitle(),
     alternativeTitle: generateMovieTitle(),
-    totalRating: getRandomInteger(0, 10),
+    totalRating: getRandomDecimalInclusive(0, 9.9),
     poster: generatePoster(),
     ageRating: getRandomInteger(0, 21),
     director: generateDirector(),
