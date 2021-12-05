@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
 const MAXIMUM_NUMBER_OF_COMMENTS = 5;
 const MAXIMUM_NUMBER_OF_GENRES = 3;
+const MAXIMUM_NUMBER_OF_WRITERS = 2;
+const MAXIMUM_NUMBER_OF_ACTORS = 3;
 const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
 const ONE_HUNDRED_YEARS = 60 * 60 * 24 * 365 * 100; // 100 лет в секундах
 
@@ -127,29 +129,45 @@ const generateComment = () => {
   };
 };
 
+const genresTemplate = [
+  'Action',
+  'Drama',
+  'Film-Noir',
+  'Mystery',
+  'Cartoon',
+  'Comedy',
+  'Musical',
+  'Western',
+];
+
+const writersTemplate = [
+  'Anne Wigton',
+  'Heinz Herald',
+  'Richard Weil',
+  'Takeshi Kitano',
+];
+
+const actorsTemplate = [
+  'Morgan Freeman',
+  'Erich von Stroheim',
+  'Mary Beth Hughes',
+  'Dan Duryea',
+];
+
 /**
- * Генерирует моковые данные жанров с фильмами
+ * Преобразует массив моковых данных для шаблона
+ * @param arrayTemplate - массив возможных значений для преобразования
+ * @param number - количество элементов нового массива
  * @returns {*[]}
  */
-const generateGenres = () => {
-  const genresTemplate = [
-    'Action',
-    'Drama',
-    'Film-Noir',
-    'Mystery',
-    'Cartoon',
-    'Comedy',
-    'Musical',
-    'Western',
-  ];
-
-  const genresNumbers = getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_GENRES);
-  const genres = [];
-  for (let i = 0; i < genresNumbers; i++) {
-    genres[i] = genresTemplate[getRandomIntInclusive(0, genresTemplate.length - 1)];
+const generateArrayTemplate = (arrayTemplate, number) => {
+  const numbers = getRandomIntInclusive(1, number);
+  const array = [];
+  for (let i = 0; i < numbers; i++) {
+    array[i] = arrayTemplate[getRandomIntInclusive(0, arrayTemplate.length - 1)];
   }
 
-  return genres;
+  return array;
 };
 
 
@@ -168,18 +186,14 @@ export const generateMovie = () => ({
     poster: 'images/posters/blue-blazes.jpg',
     ageRating: getRandomInteger(0, 21),
     director: 'Tom Ford',
-    writers: [
-      'Takeshi Kitano'
-    ],
-    actors: [
-      'Morgan Freeman'
-    ],
+    writers: generateArrayTemplate(writersTemplate, MAXIMUM_NUMBER_OF_WRITERS),
+    actors: generateArrayTemplate(actorsTemplate, MAXIMUM_NUMBER_OF_ACTORS),
     release: {
       date: generateDate(ONE_HUNDRED_YEARS),
       releaseCountry: 'Finland',
     },
     runtime: getRandomInteger(59, 180),
-    genre: generateGenres(),
+    genre: generateArrayTemplate(genresTemplate, MAXIMUM_NUMBER_OF_GENRES),
     description: generateDescription(),
   },
   userDetails: {
