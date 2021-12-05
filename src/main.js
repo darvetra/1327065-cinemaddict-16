@@ -10,9 +10,11 @@ import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 // import {createFilmDetailsTemplate} from './view/film-details-view';
 
-import './mock/movie.js';
+import {generateMovie} from './mock/movie';
 
 const MOVIE_COUNT = 5;
+
+const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -34,7 +36,7 @@ const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
 for (let i = 0; i < MOVIE_COUNT; i++) {
-  renderTemplate(filmsListContainerElement, createFilmCardTemplate());
+  renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
 }
 
 // show more buttton
@@ -49,3 +51,6 @@ renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(), Re
 
 // popup
 // renderTemplate(bodyElement, createFilmDetailsTemplate());
+
+// eslint-disable-next-line no-console
+console.log(movies);

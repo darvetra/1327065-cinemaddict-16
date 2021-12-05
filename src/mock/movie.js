@@ -235,6 +235,3 @@ export const generateMovie = () => ({
     favorite: Boolean(getRandomInteger(0, 1)),
   },
 });
-
-// eslint-disable-next-line no-console
-console.log(generateMovie());
