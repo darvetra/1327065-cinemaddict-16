@@ -81,6 +81,24 @@ const generateDirector = () => {
 };
 
 /**
+ * Генерирует моковые данные обложки фильма
+ * @returns {string}
+ */
+const generatePoster = () => {
+  const posters = [
+    'made-for-each-other.png',
+    'popeye-meets-sinbad.png',
+    'sagebrush-trail.jpg',
+    'santa-claus-conquers-the-martians.jpg',
+    'the-dance-of-life.jpg',
+    'the-great-flamarion.jpg',
+    'the-man-with-the-golden-arm.jpg',
+  ];
+  const randomIndex = getRandomInteger(0, posters.length - 1);
+  return posters[randomIndex];
+};
+
+/**
  * Генерирует моковые данные описания для карточки фильма
  * @returns {string}
  */
@@ -197,7 +215,7 @@ export const generateMovie = () => ({
     // Оставить, на будущее для понимания структуры данных
     // alternative_title: '',
     totalRating: getRandomInteger(0, 10),
-    poster: 'images/posters/blue-blazes.jpg',
+    poster: generatePoster(),
     ageRating: getRandomInteger(0, 21),
     director: generateDirector(),
     writers: generateArrayTemplate(writersTemplate, MAXIMUM_NUMBER_OF_WRITERS),
