@@ -157,13 +157,12 @@ export const generateMovie = () => ({
     ],
     description: generateDescription(),
   },
-  // Оставить, на будущее для понимания структуры данных
-  // userDetails: {
-  //   watchlist: false,
-  //   alreadyWatched: true,
-  //   watchingDate: '2019-04-12T16:12:32.554Z',
-  //   favorite: false,
-  // },
+  userDetails: {
+    watchlist: Boolean(getRandomInteger(0, 1)),
+    alreadyWatched: Boolean(getRandomInteger(0, 1)),
+    watchingDate: '2019-04-12T16:12:32.554Z',
+    favorite: Boolean(getRandomInteger(0, 1)),
+  },
 });
 
 // eslint-disable-next-line no-console
