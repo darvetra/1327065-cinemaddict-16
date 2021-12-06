@@ -13,7 +13,8 @@ import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 import {generateMovie} from './mock/movie';
 import {generateFilter} from './mock/filter';
 
-const MOVIE_COUNT = 5;
+const MOVIE_COUNT = 8;
+const MOVIE_COUNT_PER_STEP = 5;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
 const filters = generateFilter(movies);
@@ -43,7 +44,19 @@ for (let i = 0; i < MOVIE_COUNT; i++) {
 
 // show more button
 const filmsListElement = filmsElement.querySelector('.films-list');
-renderTemplate(filmsListElement, createShowMoreButtonTemplate());
+
+if (movies.length > MOVIE_COUNT_PER_STEP) {
+  renderTemplate(filmsListElement, createShowMoreButtonTemplate());
+
+  const loadMoreButton = filmsListElement.querySelector('.films-list__show-more');
+
+  loadMoreButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    // eslint-disable-next-line no-alert
+    alert('Works!');
+  });
+}
+
 
 // extra films
 renderTemplate(filmsElement, createFilmsListExtraTemplate());
