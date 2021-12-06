@@ -21,23 +21,19 @@ const createCommentTemplate = (commentItem) => {
 
 export const createFilmDetailsTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
+  const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
+  const {watchlist, alreadyWatched, favorite} = userDetails;
 
-  const title = filmInfo.title;
-  const alternativeTitle = filmInfo.alternativeTitle;
-  const poster = filmInfo.poster;
-  const totalRating = filmInfo.totalRating;
-  const director = filmInfo.director;
-  const writers = filmInfo.writers.join(', ');
-  const actors = filmInfo.actors.join(', ');
-  const releaseDate = convertHumanDate(filmInfo.release.date);
-  const runtime = formatRunTime(filmInfo.runtime);
-  const releaseCountry = filmInfo.release.releaseCountry;
-  const description = filmInfo.description;
+  const writersList = writers.join(', ');
+  const actorsList = actors.join(', ');
+  const releaseDate = convertHumanDate(release.date);
+  const humanizedRuntime = formatRunTime(runtime);
+  const releaseCountry = release.releaseCountry;
   const commentsLength = comments.length;
 
   let movieGenres = '';
-  for (const genre of filmInfo.genre) {
-    movieGenres += `<span class="film-details__genre">${genre}</span>`;
+  for (const genreItem of genre) {
+    movieGenres += `<span class="film-details__genre">${genreItem}</span>`;
   }
 
   let commentsList = '';
@@ -45,15 +41,15 @@ export const createFilmDetailsTemplate = (movie = {}) => {
     commentsList += createCommentTemplate(comment);
   }
 
-  const watchlistIsChecked = userDetails.watchlist
+  const watchlistIsChecked = watchlist
     ? 'film-details__control-button--watchlist film-details__control-button--active'
     : 'film-details__control-button--watchlist';
 
-  const watchedIsChecked = userDetails.alreadyWatched
+  const watchedIsChecked = alreadyWatched
     ? 'film-details__control-button--watched film-details__control-button--active'
     : 'film-details__control-button--watched';
 
-  const favoriteIsChecked = userDetails.favorite
+  const favoriteIsChecked = favorite
     ? 'film-details__control-button--favorite film-details__control-button--active'
     : 'film-details__control-button--favorite';
 
@@ -67,7 +63,7 @@ export const createFilmDetailsTemplate = (movie = {}) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
 
-            <p class="film-details__age">18+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -89,11 +85,11 @@ export const createFilmDetailsTemplate = (movie = {}) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${writers}</td>
+                <td class="film-details__cell">${writersList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${actors}</td>
+                <td class="film-details__cell">${actorsList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
@@ -101,7 +97,7 @@ export const createFilmDetailsTemplate = (movie = {}) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}</td>
+                <td class="film-details__cell">${humanizedRuntime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

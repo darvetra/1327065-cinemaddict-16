@@ -2,25 +2,22 @@ import {convertYearDate} from '../utils/date';
 
 export const createFilmCardTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
+  const {title, totalRating, poster, release, runtime, genre, description} = filmInfo;
+  const {watchlist, alreadyWatched, favorite} = userDetails;
 
-  const title = filmInfo.title;
-  const totalRating = filmInfo.totalRating;
-  const releaseDate = convertYearDate(filmInfo.release.date);
-  const runtime = filmInfo.runtime;
-  const genre = filmInfo.genre.slice(0, 1);
-  const poster = filmInfo.poster;
-  const description = filmInfo.description;
+  const releaseDate = convertYearDate(release.date);
+  const mainGenre = genre.slice(0, 1);
   const commentsLength = comments.length;
 
-  const watchListClassName = userDetails.watchlist
+  const watchListClassName = watchlist
     ? 'film-card__controls-item--add-to-watchlist film-card__controls-item--active'
     : 'film-card__controls-item--add-to-watchlist';
 
-  const watchedClassName = userDetails.alreadyWatched
+  const watchedClassName = alreadyWatched
     ? 'film-card__controls-item--mark-as-watched film-card__controls-item--active'
     : 'film-card__controls-item--mark-as-watched';
 
-  const favoriteClassName = userDetails.favorite
+  const favoriteClassName = favorite
     ? 'film-card__controls-item--favorite film-card__controls-item--active'
     : 'film-card__controls-item--favorite';
 
@@ -31,7 +28,7 @@ export const createFilmCardTemplate = (movie = {}) => {
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate}</span>
         <span class="film-card__duration">${runtime}m</span>
-        <span class="film-card__genre">${genre}</span>
+        <span class="film-card__genre">${mainGenre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="${title}" class="film-card__poster">
       <p class="film-card__description">${description}</p>

@@ -40,7 +40,8 @@ const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
 // movie cards
-for (let i = 0; i < Math.min(movies.length, MOVIE_COUNT_PER_STEP); i++) {
+const countPerStep = Math.min(movies.length, MOVIE_COUNT_PER_STEP);
+for (let i = 0; i < countPerStep; i++) {
   renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
 }
 

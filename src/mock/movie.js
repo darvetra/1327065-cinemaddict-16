@@ -7,7 +7,7 @@ const MAXIMUM_NUMBER_OF_COMMENTS = 5;
 const MAXIMUM_NUMBER_OF_GENRES = 3;
 const MAXIMUM_NUMBER_OF_WRITERS = 2;
 const MAXIMUM_NUMBER_OF_ACTORS = 3;
-const MAXIMUM_GAP_OF_TIME = 60 * 60* 24 * 180; // 180 дней в секундах
+const MAXIMUM_GAP_OF_TIME = 60 * 60 * 24 * 180; // 180 дней в секундах
 const ONE_HUNDRED_YEARS = 60 * 60 * 24 * 365 * 100; // 100 лет в секундах
 
 /**
@@ -34,8 +34,8 @@ const generateMovieTitle = () => {
     'The Great Flamarion',
     'Made for Each Other',
   ];
-  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
-  return movieTitles[randomIndex];
+  const index = getRandomInteger(0, movieTitles.length - 1);
+  return movieTitles[index];
 };
 
 /**
@@ -43,12 +43,12 @@ const generateMovieTitle = () => {
  * @returns {string}
  */
 const generateDirector = () => {
-  const movieTitles = [
+  const directors = [
     'Anthony Mann',
     'Tom Ford',
   ];
-  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
-  return movieTitles[randomIndex];
+  const index = getRandomInteger(0, directors.length - 1);
+  return directors[index];
 };
 
 /**
@@ -56,14 +56,14 @@ const generateDirector = () => {
  * @returns {string}
  */
 const generateCountry = () => {
-  const movieTitles = [
+  const countries = [
     'Finland',
     'USA',
     'Russia',
     'Poland',
   ];
-  const randomIndex = getRandomInteger(0, movieTitles.length - 1);
-  return movieTitles[randomIndex];
+  const index = getRandomInteger(0, countries.length - 1);
+  return countries[index];
 };
 
 /**
@@ -80,8 +80,8 @@ const generatePoster = () => {
     'the-great-flamarion.jpg',
     'the-man-with-the-golden-arm.jpg',
   ];
-  const randomIndex = getRandomInteger(0, posters.length - 1);
-  return posters[randomIndex];
+  const index = getRandomInteger(0, posters.length - 1);
+  return posters[index];
 };
 
 /**
