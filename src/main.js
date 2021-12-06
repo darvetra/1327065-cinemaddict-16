@@ -56,5 +56,3 @@ renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(movie
 
 // eslint-disable-next-line no-console
 console.log(movies);
-// eslint-disable-next-line no-console
-console.log(filters);
