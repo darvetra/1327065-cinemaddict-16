@@ -11,10 +11,12 @@ import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 // import {createFilmDetailsTemplate} from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
+import {generateFilter} from './mock/filter';
 
 const MOVIE_COUNT = 5;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
+const filters = generateFilter(movies);
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
@@ -26,7 +28,7 @@ renderTemplate(siteHeaderElement, createHeaderProfileTemplate());
 
 // sort & menu
 renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createMainNavigationTemplate(), RenderPosition.AFTERBEGIN);
+renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPosition.AFTERBEGIN);
 
 // content
 // films list
@@ -54,3 +56,5 @@ renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(movie
 
 // eslint-disable-next-line no-console
 console.log(movies);
+// eslint-disable-next-line no-console
+console.log(filters);
