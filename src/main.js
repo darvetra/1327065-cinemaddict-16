@@ -13,7 +13,7 @@ import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 import {generateMovie} from './mock/movie';
 import {generateFilter} from './mock/filter';
 
-const MOVIE_COUNT = 8;
+const MOVIE_COUNT = 20;
 const MOVIE_COUNT_PER_STEP = 5;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
@@ -32,28 +32,38 @@ renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.AFTERBEGIN)
 renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPosition.AFTERBEGIN);
 
 // content
-// films list
+// movie list
 renderTemplate(siteMainElement, createFilmsTemplate());
 
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
-for (let i = 0; i < MOVIE_COUNT; i++) {
+// movie cards
+for (let i = 0; i < Math.min(movies.length, MOVIE_COUNT_PER_STEP); i++) {
   renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
 }
 
-// show more button
 const filmsListElement = filmsElement.querySelector('.films-list');
 
+// show more button
 if (movies.length > MOVIE_COUNT_PER_STEP) {
+  let renderedMovieCount = MOVIE_COUNT_PER_STEP;
+
   renderTemplate(filmsListElement, createShowMoreButtonTemplate());
 
-  const loadMoreButton = filmsListElement.querySelector('.films-list__show-more');
+  const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
 
-  loadMoreButton.addEventListener('click', (evt) => {
+  showMoreButton.addEventListener('click', (evt) => {
     evt.preventDefault();
-    // eslint-disable-next-line no-alert
-    alert('Works!');
+    movies
+      .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
+      .forEach((movie) => renderTemplate(filmsListContainerElement, createFilmCardTemplate(movie), RenderPosition.BEFOREEND));
+
+    renderedMovieCount += MOVIE_COUNT_PER_STEP;
+
+    if (renderedMovieCount >= movies.length) {
+      showMoreButton.remove();
+    }
   });
 }
 
