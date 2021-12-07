@@ -8,7 +8,7 @@ import {createFilmCardTemplate} from './view/film-card-view';
 import {createShowMoreButtonTemplate} from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
-import {createFilmDetailsTemplate} from './view/film-details-view';
+// import {createFilmDetailsTemplate} from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
 import {generateFilter} from './mock/filter';
@@ -90,4 +90,4 @@ for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
 renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(movies), RenderPosition.AFTERBEGIN);
 
 // popup
-renderTemplate(bodyElement, createFilmDetailsTemplate(movies[0]));
+// renderTemplate(bodyElement, createFilmDetailsTemplate(movies[0]));
