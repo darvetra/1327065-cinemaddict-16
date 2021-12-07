@@ -1,8 +1,8 @@
-import {renderTemplate, RenderPosition} from './utils/render.js';
+import {renderTemplate, renderElement, RenderPosition} from './utils/render.js';
 
 import {createHeaderProfileTemplate} from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
-import {createSortTemplate} from './view/sort-view';
+import SortView from './view/sort-view';
 import {createFilmsTemplate} from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
 import {createShowMoreButtonTemplate} from './view/show-more-button-view';
@@ -29,7 +29,7 @@ const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statisti
 renderTemplate(siteHeaderElement, createHeaderProfileTemplate());
 
 // sort & menu
-renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
 renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPosition.AFTERBEGIN);
 
 // content
