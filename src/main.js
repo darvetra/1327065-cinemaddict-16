@@ -1,4 +1,4 @@
-import {renderElement, RenderPosition} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 
 import HeaderProfileView from './view/header-profile-view';
 import MainNavigationView from './view/main-navigation-view';
@@ -26,15 +26,15 @@ const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
 // header
-renderElement(siteHeaderElement, new HeaderProfileView().element);
+render(siteHeaderElement, new HeaderProfileView().element);
 
 // sort & menu
-renderElement(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
-renderElement(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
 
 // content
 // movie list
-renderElement(siteMainElement, new FilmsView().element);
+render(siteMainElement, new FilmsView().element);
 
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
@@ -42,7 +42,7 @@ const filmsListContainerElement = filmsElement.querySelector('.films-list__conta
 // movie cards
 const countPerStep = Math.min(movies.length, MOVIE_COUNT_PER_STEP);
 for (let i = 0; i < countPerStep; i++) {
-  renderElement(filmsListContainerElement, new FilmCardView(movies[i]).element);
+  render(filmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 const filmsListElement = filmsElement.querySelector('.films-list');
@@ -51,7 +51,7 @@ const filmsListElement = filmsElement.querySelector('.films-list');
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
-  renderElement(filmsListElement, new ShowMoreButtonView().element);
+  render(filmsListElement, new ShowMoreButtonView().element);
 
   const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
 
@@ -59,7 +59,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     evt.preventDefault();
     movies
       .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-      .forEach((movie) => renderElement(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
+      .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
 
     renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
@@ -70,25 +70,25 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
 }
 
 // extra movies
-renderElement(filmsElement, new FilmsListExtraView('Top rated').element);
-renderElement(filmsElement, new FilmsListExtraView('Most commented').element);
+render(filmsElement, new FilmsListExtraView('Top rated').element);
+render(filmsElement, new FilmsListExtraView('Most commented').element);
 
 const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
 
 // top rated movies
 const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderElement(topRatedFilmsListContainerElement, new FilmCardView(movies[i]).element);
+  render(topRatedFilmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 // most commented movies
 const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderElement(mostCommentedFilmsListContainerElement, new FilmCardView(movies[i]).element);
+  render(mostCommentedFilmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 // footer
-renderElement(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);
+render(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);
 
 // popup
-// renderElement(bodyElement, new FilmDetailsView(movies[0]).element);
+// render(bodyElement, new FilmDetailsView(movies[0]).element);
