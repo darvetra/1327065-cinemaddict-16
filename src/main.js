@@ -6,7 +6,7 @@ import SortView from './view/sort-view';
 import FilmsView from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
-import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
+import FilmsListExtraView from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 // import {createFilmDetailsTemplate} from './view/film-details-view';
 
@@ -70,7 +70,8 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
 }
 
 // extra movies
-renderTemplate(filmsElement, createFilmsListExtraTemplate());
+renderElement(filmsElement, new FilmsListExtraView('Top rated').element);
+renderElement(filmsElement, new FilmsListExtraView('Most commented').element);
 
 const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
 
