@@ -1,10 +1,10 @@
-import {renderTemplate, renderElement, RenderPosition} from './utils/render.js';
+import {renderElement, RenderPosition} from './utils/render.js';
 
 import HeaderProfileView from './view/header-profile-view';
 import MainNavigationView from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import FilmsView from './view/films-view';
-import {createFilmCardTemplate} from './view/film-card-view';
+import FilmCardView from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
 import FilmsListExtraView from './view/films-list-extra-view';
 import FooterStatisticsView from './view/footer-statistics-view';
@@ -42,7 +42,7 @@ const filmsListContainerElement = filmsElement.querySelector('.films-list__conta
 // movie cards
 const countPerStep = Math.min(movies.length, MOVIE_COUNT_PER_STEP);
 for (let i = 0; i < countPerStep; i++) {
-  renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderElement(filmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 const filmsListElement = filmsElement.querySelector('.films-list');
@@ -59,7 +59,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     evt.preventDefault();
     movies
       .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-      .forEach((movie) => renderTemplate(filmsListContainerElement, createFilmCardTemplate(movie), RenderPosition.BEFOREEND));
+      .forEach((movie) => renderElement(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
 
     renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
@@ -78,13 +78,13 @@ const filmListExtraElements = filmsElement.getElementsByClassName('films-list--e
 // top rated movies
 const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderTemplate(topRatedFilmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderElement(topRatedFilmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 // most commented movies
 const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderTemplate(mostCommentedFilmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderElement(mostCommentedFilmsListContainerElement, new FilmCardView(movies[i]).element);
 }
 
 // footer
