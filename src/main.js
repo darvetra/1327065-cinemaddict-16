@@ -3,7 +3,7 @@ import {renderTemplate, renderElement, RenderPosition} from './utils/render.js';
 import HeaderProfileView from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
 import SortView from './view/sort-view';
-import {createFilmsTemplate} from './view/films-view';
+import FilmsView from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
@@ -34,7 +34,7 @@ renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPos
 
 // content
 // movie list
-renderTemplate(siteMainElement, createFilmsTemplate());
+renderElement(siteMainElement, new FilmsView().element);
 
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
