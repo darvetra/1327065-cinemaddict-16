@@ -1,6 +1,6 @@
 import {renderTemplate, renderElement, RenderPosition} from './utils/render.js';
 
-import {createHeaderProfileTemplate} from './view/header-profile-view';
+import HeaderProfileView from './view/header-profile-view';
 import {createMainNavigationTemplate} from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import {createFilmsTemplate} from './view/films-view';
@@ -26,7 +26,7 @@ const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
 // header
-renderTemplate(siteHeaderElement, createHeaderProfileTemplate());
+renderElement(siteHeaderElement, new HeaderProfileView().element);
 
 // sort & menu
 renderElement(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
