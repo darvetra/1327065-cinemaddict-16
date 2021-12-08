@@ -8,7 +8,7 @@ import {createFilmCardTemplate} from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
 import FilmsListExtraView from './view/films-list-extra-view';
 import FooterStatisticsView from './view/footer-statistics-view';
-// import {createFilmDetailsTemplate} from './view/film-details-view';
+// import FilmDetailsView from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
 import {generateFilter} from './mock/filter';
@@ -91,4 +91,4 @@ for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
 renderElement(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);
 
 // popup
-// renderTemplate(bodyElement, createFilmDetailsTemplate(movies[0]));
+// renderElement(bodyElement, new FilmDetailsView(movies[0]).element);
