@@ -9,7 +9,7 @@ export const renderTemplate = (container, template, place = RenderPosition.BEFOR
   container.insertAdjacentHTML(place, template);
 };
 
-export const renderElement = (container, element, place) => {
+export const renderElement = (container, element, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.BEFOREBEGIN:
       container.before(element);

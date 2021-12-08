@@ -5,7 +5,7 @@ import {createMainNavigationTemplate} from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import {createFilmsTemplate} from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
-import {createShowMoreButtonTemplate} from './view/show-more-button-view';
+import ShowMoreButtonView from './view/show-more-button-view';
 import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
 import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
 // import {createFilmDetailsTemplate} from './view/film-details-view';
@@ -51,7 +51,7 @@ const filmsListElement = filmsElement.querySelector('.films-list');
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
-  renderTemplate(filmsListElement, createShowMoreButtonTemplate());
+  renderElement(filmsListElement, new ShowMoreButtonView().element);
 
   const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
 
