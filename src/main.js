@@ -1,13 +1,13 @@
 import {renderTemplate, renderElement, RenderPosition} from './utils/render.js';
 
 import HeaderProfileView from './view/header-profile-view';
-import {createMainNavigationTemplate} from './view/main-navigation-view';
+import MainNavigationView from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import FilmsView from './view/films-view';
 import {createFilmCardTemplate} from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
 import FilmsListExtraView from './view/films-list-extra-view';
-import FooterStatisticsView, {createFooterStatisticsTemplate} from './view/footer-statistics-view';
+import FooterStatisticsView from './view/footer-statistics-view';
 // import {createFilmDetailsTemplate} from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
@@ -30,7 +30,7 @@ renderElement(siteHeaderElement, new HeaderProfileView().element);
 
 // sort & menu
 renderElement(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
 
 // content
 // movie list
