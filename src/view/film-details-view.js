@@ -1,3 +1,4 @@
+import {createElement} from '../utils/render';
 import {convertHumanDate, convertHumanTime, formatRunTime} from '../utils/date';
 
 const createCommentTemplate = (commentItem) => {
@@ -19,7 +20,7 @@ const createCommentTemplate = (commentItem) => {
   </li>`;
 };
 
-export const createFilmDetailsTemplate = (movie = {}) => {
+const createFilmDetailsTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
@@ -164,3 +165,28 @@ export const createFilmDetailsTemplate = (movie = {}) => {
     </form>
   </section>`;
 };
+
+export default class FilmDetailsView {
+  #element = null;
+  #movie  = null;
+
+  constructor(movie ) {
+    this.#movie  = movie ;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmDetailsTemplate(this.#movie);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

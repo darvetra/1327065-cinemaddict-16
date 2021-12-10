@@ -1,14 +1,14 @@
-import {renderTemplate, RenderPosition} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 
-import {createHeaderProfileTemplate} from './view/header-profile-view';
-import {createMainNavigationTemplate} from './view/main-navigation-view';
-import {createSortTemplate} from './view/sort-view';
-import {createFilmsTemplate} from './view/films-view';
-import {createFilmCardTemplate} from './view/film-card-view';
-import {createShowMoreButtonTemplate} from './view/show-more-button-view';
-import {createFilmsListExtraTemplate} from './view/films-list-extra-view';
-import {createFooterStatisticsTemplate} from './view/footer-statistics-view';
-import {createFilmDetailsTemplate} from './view/film-details-view';
+import HeaderProfileView from './view/header-profile-view';
+import MainNavigationView from './view/main-navigation-view';
+import SortView from './view/sort-view';
+import FilmsView from './view/films-view';
+import FilmCardView from './view/film-card-view';
+import ShowMoreButtonView from './view/show-more-button-view';
+import FilmsListExtraView from './view/films-list-extra-view';
+import FooterStatisticsView from './view/footer-statistics-view';
+import FilmDetailsView from './view/film-details-view';
 
 import {generateMovie} from './mock/movie';
 import {generateFilter} from './mock/filter';
@@ -25,16 +25,51 @@ const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
+/**
+ * Реализует функционал отрисовки карточек фильмов, а также показа и закрытия поп-апа
+ * @param container
+ * @param film
+ */
+const renderFilmCard = (container, film) => {
+  const filmCardComponent = new FilmCardView(film);
+  const filmDetailsComponent = new FilmDetailsView(film);
+
+  const openPopup = () => {
+    bodyElement.appendChild(filmDetailsComponent.element);
+    bodyElement.classList.add('hide-overflow');
+  };
+
+  const closePopup = () => {
+    bodyElement.removeChild(filmDetailsComponent.element);
+    bodyElement.classList.remove('hide-overflow');
+  };
+
+  // клик по ссылке (открытие поп-апа)
+  filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    openPopup(film);
+  });
+
+  // Клик по кнопке закрытия поп-апа
+  filmDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    closePopup();
+  });
+
+  render(container, filmCardComponent.element);
+};
+
+
 // header
-renderTemplate(siteHeaderElement, createHeaderProfileTemplate());
+render(siteHeaderElement, new HeaderProfileView().element);
 
 // sort & menu
-renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createMainNavigationTemplate(filters), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
 
 // content
 // movie list
-renderTemplate(siteMainElement, createFilmsTemplate());
+render(siteMainElement, new FilmsView().element);
 
 const filmsElement = siteMainElement.querySelector('.films');
 const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
@@ -42,7 +77,7 @@ const filmsListContainerElement = filmsElement.querySelector('.films-list__conta
 // movie cards
 const countPerStep = Math.min(movies.length, MOVIE_COUNT_PER_STEP);
 for (let i = 0; i < countPerStep; i++) {
-  renderTemplate(filmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderFilmCard(filmsListContainerElement, movies[i]);
 }
 
 const filmsListElement = filmsElement.querySelector('.films-list');
@@ -51,7 +86,7 @@ const filmsListElement = filmsElement.querySelector('.films-list');
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
-  renderTemplate(filmsListElement, createShowMoreButtonTemplate());
+  render(filmsListElement, new ShowMoreButtonView().element);
 
   const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
 
@@ -59,7 +94,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     evt.preventDefault();
     movies
       .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-      .forEach((movie) => renderTemplate(filmsListContainerElement, createFilmCardTemplate(movie), RenderPosition.BEFOREEND));
+      .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
 
     renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
@@ -70,24 +105,22 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
 }
 
 // extra movies
-renderTemplate(filmsElement, createFilmsListExtraTemplate());
+render(filmsElement, new FilmsListExtraView('Top rated').element);
+render(filmsElement, new FilmsListExtraView('Most commented').element);
 
 const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
 
 // top rated movies
 const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderTemplate(topRatedFilmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderFilmCard(topRatedFilmsListContainerElement, movies[i]);
 }
 
 // most commented movies
 const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
 for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-  renderTemplate(mostCommentedFilmsListContainerElement, createFilmCardTemplate(movies[i]));
+  renderFilmCard(mostCommentedFilmsListContainerElement, movies[i]);
 }
 
 // footer
-renderTemplate(siteFooterStatisticsElement, createFooterStatisticsTemplate(movies), RenderPosition.AFTERBEGIN);
-
-// popup
-renderTemplate(bodyElement, createFilmDetailsTemplate(movies[0]));
+render(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);

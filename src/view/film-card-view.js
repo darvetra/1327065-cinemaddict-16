@@ -1,6 +1,7 @@
+import {createElement} from '../utils/render';
 import {convertYearDate} from '../utils/date';
 
-export const createFilmCardTemplate = (movie = {}) => {
+const createFilmCardTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
   const {title, totalRating, poster, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
@@ -41,3 +42,28 @@ export const createFilmCardTemplate = (movie = {}) => {
     </div>
   </article>`;
 };
+
+export default class FilmCardView {
+  #element = null;
+  #movie  = null;
+
+  constructor(movie) {
+    this.#movie  = movie ;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmCardTemplate(this.#movie);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
