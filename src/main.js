@@ -44,16 +44,26 @@ const renderFilmCard = (container, film) => {
     bodyElement.classList.remove('hide-overflow');
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      closePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   // клик по ссылке (открытие поп-апа)
   filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
     evt.preventDefault();
     openPopup(film);
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   // Клик по кнопке закрытия поп-апа
   filmDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
     evt.preventDefault();
     closePopup();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(container, filmCardComponent.element);
