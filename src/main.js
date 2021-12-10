@@ -26,30 +26,37 @@ const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
 /**
- * Отрисовывает поп-ап
- * @param film
- */
-const renderPopup = (film) => {
-  const filmDetailsComponent = new FilmDetailsView(film);
-
-  render(bodyElement, filmDetailsComponent.element);
-  bodyElement.classList.add('hide-overflow');
-};
-
-/**
- * Отрисовывает карточку фильма
+ * Реализует функционал отрисовки карточек фильмов, а также показа и закрытия поп-апа
  * @param container
  * @param film
  */
 const renderFilmCard = (container, film) => {
   const filmCardComponent = new FilmCardView(film);
+  const filmDetailsComponent = new FilmDetailsView(film);
+
+  const openPopup = () => {
+    bodyElement.appendChild(filmDetailsComponent.element);
+    bodyElement.classList.add('hide-overflow');
+  };
+
+  const closePopup = () => {
+    bodyElement.removeChild(filmDetailsComponent.element);
+    bodyElement.classList.remove('hide-overflow');
+  };
+
+  // клик по ссылке (открытие поп-апа)
+  filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    openPopup(film);
+  });
+
+  // Клик по кнопке закрытия поп-апа
+  filmDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    closePopup();
+  });
 
   render(container, filmCardComponent.element);
-
-  filmCardComponent.element.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    renderPopup(film);
-  });
 };
 
 
