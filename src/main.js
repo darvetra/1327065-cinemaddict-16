@@ -70,34 +70,28 @@ const renderFilmCard = (container, film) => {
   render(container, filmCardComponent.element);
 };
 
+const renderFilmsContainer = (moviesContainer, moviesList) => {
+  if (moviesList.length === 0) {
+    render(moviesContainer, new NoFilmsView().element);
+    return;
+  }
 
-// header
-render(siteHeaderElement, new HeaderProfileView().element);
+  // movie list
+  render(moviesContainer, new FilmsView().element);
 
-// sort & menu
-render(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
-render(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
-
-// content
-if (movies.length === 0) {
-  render(siteMainElement, new NoFilmsView().element);
-} else {
-// movie list
-  render(siteMainElement, new FilmsView().element);
-
-  const filmsElement = siteMainElement.querySelector('.films');
+  const filmsElement = moviesContainer.querySelector('.films');
   const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
   // movie cards
-  const countPerStep = Math.min(movies.length, MOVIE_COUNT_PER_STEP);
+  const countPerStep = Math.min(moviesList.length, MOVIE_COUNT_PER_STEP);
   for (let i = 0; i < countPerStep; i++) {
-    renderFilmCard(filmsListContainerElement, movies[i]);
+    renderFilmCard(filmsListContainerElement, moviesList[i]);
   }
 
   const filmsListElement = filmsElement.querySelector('.films-list');
 
   // show more button
-  if (movies.length > MOVIE_COUNT_PER_STEP) {
+  if (moviesList.length > MOVIE_COUNT_PER_STEP) {
     let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
     render(filmsListElement, new ShowMoreButtonView().element);
@@ -106,7 +100,7 @@ if (movies.length === 0) {
 
     showMoreButton.addEventListener('click', (evt) => {
       evt.preventDefault();
-      movies
+      moviesList
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
         .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
 
@@ -127,15 +121,26 @@ if (movies.length === 0) {
   // top rated movies
   const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
   for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-    renderFilmCard(topRatedFilmsListContainerElement, movies[i]);
+    renderFilmCard(topRatedFilmsListContainerElement, moviesList[i]);
   }
 
   // most commented movies
   const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
   for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-    renderFilmCard(mostCommentedFilmsListContainerElement, movies[i]);
+    renderFilmCard(mostCommentedFilmsListContainerElement, moviesList[i]);
   }
-}
+};
+
+
+// header
+render(siteHeaderElement, new HeaderProfileView().element);
+
+// sort & menu
+render(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
+
+// content
+renderFilmsContainer(siteMainElement, movies);
 
 // footer
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);
