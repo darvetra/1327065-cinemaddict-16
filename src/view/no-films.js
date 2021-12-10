@@ -1,6 +1,6 @@
 import {createElement} from '../utils/render';
 
-const createListEmptyTemplate = () => (
+const createNoFilmsTemplate = () => (
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title">There are no movies in our database</h2>
@@ -16,7 +16,7 @@ const createListEmptyTemplate = () => (
   </section>`
 );
 
-export default class ListEmptyView {
+export default class NoFilmsView {
   #element = null;
 
   get element() {
@@ -28,7 +28,7 @@ export default class ListEmptyView {
   }
 
   get template() {
-    return createListEmptyTemplate();
+    return createNoFilmsTemplate();
   }
 
   removeElement() {
