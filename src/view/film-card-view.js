@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import AbstractView from './abstract-view.js';
 import {convertYearDate} from '../utils/date';
 
 const createFilmCardTemplate = (movie = {}) => {
@@ -43,27 +43,15 @@ const createFilmCardTemplate = (movie = {}) => {
   </article>`;
 };
 
-export default class FilmCardView {
-  #element = null;
+export default class FilmCardView extends AbstractView {
   #movie  = null;
 
   constructor(movie) {
+    super();
     this.#movie  = movie ;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createFilmCardTemplate(this.#movie);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

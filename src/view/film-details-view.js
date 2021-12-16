@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import AbstractView from './abstract-view.js';
 import {convertHumanDate, convertHumanTime, formatRunTime} from '../utils/date';
 
 const createCommentTemplate = (commentItem) => {
@@ -166,27 +166,15 @@ const createFilmDetailsTemplate = (movie = {}) => {
   </section>`;
 };
 
-export default class FilmDetailsView {
-  #element = null;
+export default class FilmDetailsView extends AbstractView {
   #movie  = null;
 
   constructor(movie ) {
+    super();
     this.#movie  = movie ;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createFilmDetailsTemplate(this.#movie);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
