@@ -41,6 +41,32 @@ export const createElement = (template) => {
 // то есть быть чем-то вроде <nav><a>Link 1</a><a>Link 2</a></nav>,
 // а не просто <a>Link 1</a><a>Link 2</a>
 
+export const removeSpecialChild = (element) => {
+  if (element === null) {
+    throw new Error('Can\'t remove unexisting elements');
+  }
+
+  const child = element instanceof AbstractView ? element.element : element;
+
+  const parent = child.parentElement;
+
+  if (parent === null) {
+    throw new Error('Parent element doesn\'t exist');
+  }
+
+  parent.removeChild(child);
+};
+
+export const appendSpecialChild = (parent, element) => {
+  const child = element instanceof AbstractView ? element.element : element;
+
+  if (parent === null) {
+    throw new Error('Parent element doesn\'t exist');
+  }
+
+  parent.appendChild(child);
+};
+
 export const remove = (component) => {
   if (component === null) {
     return;
