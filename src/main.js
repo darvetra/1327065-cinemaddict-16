@@ -54,15 +54,13 @@ const renderFilmCard = (container, film) => {
   };
 
   // клик по ссылке (открытие поп-апа)
-  filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
-    evt.preventDefault();
+  filmCardComponent.setPopupClickHandler(() => {
     openPopup(film);
     document.addEventListener('keydown', onEscKeyDown);
   });
 
   // Клик по кнопке закрытия поп-апа
-  filmDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
+  filmDetailsComponent.setFormCloseHandler(() => {
     closePopup();
     document.removeEventListener('keydown', onEscKeyDown);
   });
@@ -94,20 +92,20 @@ const renderFilmsContainer = (moviesContainer, moviesList) => {
   if (moviesList.length > MOVIE_COUNT_PER_STEP) {
     let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
-    render(filmsListElement, new ShowMoreButtonView().element);
+    const showMoreButtonComponent = new ShowMoreButtonView();
 
-    const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
+    render(filmsListElement, showMoreButtonComponent.element);
 
-    showMoreButton.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreButtonComponent.setClickHandler(() => {
       moviesList
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-        .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
+        .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element));
 
       renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
       if (renderedMovieCount >= movies.length) {
-        showMoreButton.remove();
+        showMoreButtonComponent.element.remove();
+        showMoreButtonComponent.removeElement();
       }
     });
   }
