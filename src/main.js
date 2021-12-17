@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils/render.js';
+import {render, remove, RenderPosition, removeSpecialChild, appendSpecialChild} from './utils/render.js';
 
 import HeaderProfileView from './view/header-profile-view';
 import MainNavigationView from './view/main-navigation-view';
@@ -36,12 +36,12 @@ const renderFilmCard = (container, film) => {
   const filmDetailsComponent = new FilmDetailsView(film);
 
   const openPopup = () => {
-    bodyElement.appendChild(filmDetailsComponent.element);
+    appendSpecialChild(bodyElement, filmDetailsComponent);
     bodyElement.classList.add('hide-overflow');
   };
 
   const closePopup = () => {
-    bodyElement.removeChild(filmDetailsComponent.element);
+    removeSpecialChild(filmDetailsComponent);
     bodyElement.classList.remove('hide-overflow');
   };
 
@@ -54,30 +54,28 @@ const renderFilmCard = (container, film) => {
   };
 
   // клик по ссылке (открытие поп-апа)
-  filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
-    evt.preventDefault();
+  filmCardComponent.setPopupClickHandler(() => {
     openPopup(film);
     document.addEventListener('keydown', onEscKeyDown);
   });
 
   // Клик по кнопке закрытия поп-апа
-  filmDetailsComponent.element.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
+  filmDetailsComponent.setFormCloseHandler(() => {
     closePopup();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(container, filmCardComponent.element);
+  render(container, filmCardComponent);
 };
 
 const renderFilmsContainer = (moviesContainer, moviesList) => {
   if (moviesList.length === 0) {
-    render(moviesContainer, new NoFilmsView().element);
+    render(moviesContainer, new NoFilmsView());
     return;
   }
 
   // movie list
-  render(moviesContainer, new FilmsView().element);
+  render(moviesContainer, new FilmsView());
 
   const filmsElement = moviesContainer.querySelector('.films');
   const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
@@ -94,27 +92,26 @@ const renderFilmsContainer = (moviesContainer, moviesList) => {
   if (moviesList.length > MOVIE_COUNT_PER_STEP) {
     let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
-    render(filmsListElement, new ShowMoreButtonView().element);
+    const showMoreButtonComponent = new ShowMoreButtonView();
 
-    const showMoreButton = filmsListElement.querySelector('.films-list__show-more');
+    render(filmsListElement, showMoreButtonComponent);
 
-    showMoreButton.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreButtonComponent.setClickHandler(() => {
       moviesList
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-        .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie).element, RenderPosition.BEFOREEND));
+        .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie)));
 
       renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
       if (renderedMovieCount >= movies.length) {
-        showMoreButton.remove();
+        remove(showMoreButtonComponent);
       }
     });
   }
 
   // extra movies
-  render(filmsElement, new FilmsListExtraView('Top rated').element);
-  render(filmsElement, new FilmsListExtraView('Most commented').element);
+  render(filmsElement, new FilmsListExtraView('Top rated'));
+  render(filmsElement, new FilmsListExtraView('Most commented'));
 
   const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
 
@@ -133,14 +130,14 @@ const renderFilmsContainer = (moviesContainer, moviesList) => {
 
 
 // header
-render(siteHeaderElement, new HeaderProfileView().element);
+render(siteHeaderElement, new HeaderProfileView());
 
 // sort & menu
-render(siteMainElement, new SortView().element, RenderPosition.AFTERBEGIN);
-render(siteMainElement, new MainNavigationView(filters).element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new SortView(), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new MainNavigationView(filters), RenderPosition.AFTERBEGIN);
 
 // content
 renderFilmsContainer(siteMainElement, movies);
 
 // footer
-render(siteFooterStatisticsElement, new FooterStatisticsView(movies).element, RenderPosition.AFTERBEGIN);
+render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);

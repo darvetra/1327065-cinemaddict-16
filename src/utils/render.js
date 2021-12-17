@@ -1,3 +1,5 @@
+import AbstractView from '../view/abstract-view.js';
+
 export const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -6,18 +8,21 @@ export const RenderPosition = {
 };
 
 export const render = (container, element, place = RenderPosition.BEFOREEND) => {
+  const parent = container instanceof AbstractView ? container.element : container;
+  const child = element instanceof AbstractView ? element.element : element;
+
   switch (place) {
     case RenderPosition.BEFOREBEGIN:
-      container.before(element);
+      parent.before(child);
       break;
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      parent.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      parent.append(child);
       break;
     case RenderPosition.AFTEREND:
-      container.after(element);
+      parent.after(child);
       break;
   }
 };
@@ -35,3 +40,42 @@ export const createElement = (template) => {
 // Единственный нюанс, что HTML в строке должен иметь общую обёртку,
 // то есть быть чем-то вроде <nav><a>Link 1</a><a>Link 2</a></nav>,
 // а не просто <a>Link 1</a><a>Link 2</a>
+
+export const removeSpecialChild = (element) => {
+  if (element === null) {
+    throw new Error('Can\'t remove unexisting elements');
+  }
+
+  const child = element instanceof AbstractView ? element.element : element;
+
+  const parent = child.parentElement;
+
+  if (parent === null) {
+    throw new Error('Parent element doesn\'t exist');
+  }
+
+  parent.removeChild(child);
+};
+
+export const appendSpecialChild = (parent, element) => {
+  const child = element instanceof AbstractView ? element.element : element;
+
+  if (parent === null) {
+    throw new Error('Parent element doesn\'t exist');
+  }
+
+  parent.appendChild(child);
+};
+
+export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
+  if (!(component instanceof AbstractView)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.element.remove();
+  component.removeElement();
+};
