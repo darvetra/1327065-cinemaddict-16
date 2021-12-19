@@ -99,7 +99,7 @@ const renderFilmsContainer = (moviesContainer, moviesList) => {
     showMoreButtonComponent.setClickHandler(() => {
       moviesList
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-        .forEach((movie) => render(filmsListContainerElement, new FilmCardView(movie)));
+        .forEach((movieCard) => renderFilmCard(filmsListContainerElement, movieCard));
 
       renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
