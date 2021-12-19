@@ -1,4 +1,4 @@
-import {render, remove, RenderPosition, removeSpecialChild, appendSpecialChild} from './utils/render.js';
+import {render, remove, RenderPosition, customRemoveChild, customAppendChild} from './utils/render.js';
 
 import HeaderProfileView from './view/header-profile-view';
 import MainNavigationView from './view/main-navigation-view';
@@ -36,12 +36,12 @@ const renderFilmCard = (container, film) => {
   const filmDetailsComponent = new FilmDetailsView(film);
 
   const openPopup = () => {
-    appendSpecialChild(bodyElement, filmDetailsComponent);
+    customAppendChild(bodyElement, filmDetailsComponent);
     bodyElement.classList.add('hide-overflow');
   };
 
   const closePopup = () => {
-    removeSpecialChild(filmDetailsComponent);
+    customRemoveChild(filmDetailsComponent);
     bodyElement.classList.remove('hide-overflow');
   };
 
