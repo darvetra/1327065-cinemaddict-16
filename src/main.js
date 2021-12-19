@@ -81,10 +81,9 @@ const renderFilmsContainer = (moviesContainer, moviesList) => {
   const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
   // movie cards
-  const countPerStep = Math.min(moviesList.length, MOVIE_COUNT_PER_STEP);
-  for (let i = 0; i < countPerStep; i++) {
-    renderFilmCard(filmsListContainerElement, moviesList[i]);
-  }
+  moviesList
+    .slice(0, Math.min(moviesList.length, MOVIE_COUNT_PER_STEP))
+    .forEach((movieCard) => renderFilmCard(filmsListContainerElement, movieCard));
 
   const filmsListElement = filmsElement.querySelector('.films-list');
 
