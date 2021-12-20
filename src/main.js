@@ -68,17 +68,18 @@ const renderFilmCard = (container, film) => {
   render(container, filmCardComponent);
 };
 
-const renderFilmsContainer = (moviesContainer, moviesList) => {
+const renderFilmsContainer = (contentContainer, moviesList) => {
+  // movie list
+  const movieListComponent = new FilmsView();
+  render(contentContainer, movieListComponent);
+
+  const filmsElement = contentContainer.querySelector('.films');
+  const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
+
   if (moviesList.length === 0) {
-    render(moviesContainer, new NoFilmsView());
+    render(contentContainer, new NoFilmsView());
     return;
   }
-
-  // movie list
-  render(moviesContainer, new FilmsView());
-
-  const filmsElement = moviesContainer.querySelector('.films');
-  const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
   // movie cards
   moviesList

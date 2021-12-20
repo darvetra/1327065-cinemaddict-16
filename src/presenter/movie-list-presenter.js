@@ -11,6 +11,8 @@ import FilmsListExtraView from '../view/films-list-extra-view';
 import FooterStatisticsView from '../view/footer-statistics-view';
 import FilmDetailsView from '../view/film-details-view';
 
+const MOVIE_COUNT_PER_STEP = 5;
+
 export default class MovieListPresenter {
   #contentContainer = null;
 
@@ -26,8 +28,10 @@ export default class MovieListPresenter {
 
   init = (movieCards) => {
     this.#movieCards = [...movieCards];
-    // Метод для инициализации (начала работы) модуля,
-    // малая часть текущей функции renderBoard в main.js
+
+    render(this.#contentContainer, this.#movieListComponent);
+
+    this.#renderMovieList();
   }
 
   #renderSort = () => {
@@ -39,7 +43,7 @@ export default class MovieListPresenter {
     // текущая функция renderTask в main.js
   }
 
-  #renderMovieCards = () => {
+  #renderMovieCards = (from, to) => {
     // Метод для рендеринга N-задач за раз
   }
 
@@ -52,8 +56,24 @@ export default class MovieListPresenter {
     // сейчас в main.js является частью renderBoard
   }
 
+  //#renderMainElement ???
   #renderMovieList = () => {
-    // Метод для инициализации (начала работы) модуля,
-    // бОльшая часть текущей функции renderBoard в main.js
+    // sort
+    this.#renderSort();
+
+    // content
+    const filmsElement = this.#contentContainer.querySelector('.films');
+    const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
+
+    if (this.#movieCards.length === 0) {
+      this.#renderNoMovies();
+      return;
+    }
+
+    this.#renderMovieCards(0, Math.min(this.#movieCards.length, MOVIE_COUNT_PER_STEP));
+
+    if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
+      this.#renderShowMoreButton();
+    }
   }
 }
