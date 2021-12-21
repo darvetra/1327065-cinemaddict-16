@@ -5,6 +5,7 @@ import MainNavigationView from './view/main-navigation-view';
 import SortView from './view/sort-view';
 import NoFilmsView from './view/no-films';
 import FilmsView from './view/films-view';
+import FilmsListView from './view/films-list-view';
 import FilmCardView from './view/film-card-view';
 import ShowMoreButtonView from './view/show-more-button-view';
 import FilmsListExtraView from './view/films-list-extra-view';
@@ -70,11 +71,15 @@ const renderFilmCard = (container, film) => {
 
 const renderFilmsContainer = (contentContainer, moviesList) => {
   // movie list
-  const movieListComponent = new FilmsView();
-  render(contentContainer, movieListComponent);
+  const moviesSectionComponent = new FilmsView();
+  const moviesListComponent = new FilmsListView();
+
+  render(contentContainer, moviesSectionComponent);
+
+  const filmsListElement = contentContainer.querySelector('.films-list');
+  render(filmsListElement, moviesListComponent);
 
   const filmsElement = contentContainer.querySelector('.films');
-  const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
 
   if (moviesList.length === 0) {
     render(contentContainer, new NoFilmsView());
@@ -84,9 +89,7 @@ const renderFilmsContainer = (contentContainer, moviesList) => {
   // movie cards
   moviesList
     .slice(0, Math.min(moviesList.length, MOVIE_COUNT_PER_STEP))
-    .forEach((movieCard) => renderFilmCard(filmsListContainerElement, movieCard));
-
-  const filmsListElement = filmsElement.querySelector('.films-list');
+    .forEach((movieCard) => renderFilmCard(moviesListComponent, movieCard));
 
   // show more button
   if (moviesList.length > MOVIE_COUNT_PER_STEP) {
@@ -99,7 +102,7 @@ const renderFilmsContainer = (contentContainer, moviesList) => {
     showMoreButtonComponent.setClickHandler(() => {
       moviesList
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-        .forEach((movieCard) => renderFilmCard(filmsListContainerElement, movieCard));
+        .forEach((movieCard) => renderFilmCard(moviesListComponent, movieCard));
 
       renderedMovieCount += MOVIE_COUNT_PER_STEP;
 

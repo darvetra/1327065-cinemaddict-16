@@ -5,6 +5,7 @@ import MainNavigationView from '../view/main-navigation-view';
 import SortView from '../view/sort-view';
 import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
+import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 import FilmsListExtraView from '../view/films-list-extra-view';
@@ -14,57 +15,59 @@ import FilmDetailsView from '../view/film-details-view';
 const MOVIE_COUNT_PER_STEP = 5;
 
 export default class MovieListPresenter {
-  #contentContainer = null;
+  #mainContainer = null;
 
-  #movieListComponent = new FilmsView();
+  #moviesSectionComponent = new FilmsView();
+  #moviesListComponent = new FilmsListView();
   #sortComponent = new SortView();
   #noMoviesComponent = new NoFilmsView();
 
   #movieCards = [];
 
-  constructor(contentContainer) {
-    this.#contentContainer = contentContainer;
+  constructor(mainContainer) {
+    this.#mainContainer = mainContainer;
   }
 
   init = (movieCards) => {
     this.#movieCards = [...movieCards];
 
-    render(this.#contentContainer, this.#movieListComponent);
+    render(this.#mainContainer, this.#moviesSectionComponent);
 
-    this.#renderMovieList();
+    const filmsListElement = this.#mainContainer.querySelector('.films-list');
+    render(filmsListElement, this.#moviesListComponent);
+
+    this.#renderMainContainer();
   }
 
   #renderSort = () => {
-    // Метод для рендеринга сортировки
+    render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderMovieCard = () => {
-    // Метод, куда уйдёт логика созданию и рендерингу компонетов задачи,
-    // текущая функция renderTask в main.js
+  #renderMovieCard = (movie) => {
+    // Метод, куда уйдёт логика созданию и рендерингу компонетов карточки фильма,
+    // текущая функция renderFilmCard в main.js
   }
 
   #renderMovieCards = (from, to) => {
-    // Метод для рендеринга N-задач за раз
+    this.#movieCards
+      .slice(from, to)
+      .forEach((movieCard) => this.#renderMovieCard(movieCard));
   }
 
   #renderNoMovies = () => {
-    // Метод для рендеринга заглушки
+    render(this.#moviesSectionComponent, this.#noMoviesComponent);
   }
 
   #renderShowMoreButton = () => {
-    // Метод, куда уйдёт логика по отрисовке кнопки допоказа задач,
-    // сейчас в main.js является частью renderBoard
+    // Метод, куда уйдёт логика по отрисовке кнопки допоказа фильмов,
+    // сейчас в main.js является частью renderFilmsContainer
   }
 
-  //#renderMainElement ???
-  #renderMovieList = () => {
+  #renderMainContainer = () => {
     // sort
     this.#renderSort();
 
     // content
-    const filmsElement = this.#contentContainer.querySelector('.films');
-    const filmsListContainerElement = filmsElement.querySelector('.films-list__container');
-
     if (this.#movieCards.length === 0) {
       this.#renderNoMovies();
       return;
