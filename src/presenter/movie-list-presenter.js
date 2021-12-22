@@ -1,4 +1,4 @@
-import {customAppendChild, customRemoveChild, render, RenderPosition} from '../utils/render.js';
+import {customAppendChild, customRemoveChild, remove, render, RenderPosition} from '../utils/render.js';
 
 // import HeaderProfileView from '../view/header-profile-view';
 // import MainNavigationView from '../view/main-navigation-view';
@@ -7,7 +7,7 @@ import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
-// import ShowMoreButtonView from '../view/show-more-button-view';
+import ShowMoreButtonView from '../view/show-more-button-view';
 // import FilmsListExtraView from '../view/films-list-extra-view';
 // import FooterStatisticsView from '../view/footer-statistics-view';
 import FilmDetailsView from '../view/film-details-view';
@@ -93,8 +93,23 @@ export default class MovieListPresenter {
   }
 
   #renderShowMoreButton = () => {
-    // Метод, куда уйдёт логика по отрисовке кнопки допоказа фильмов,
-    // сейчас в main.js является частью renderFilmsContainer
+    let renderedMovieCount = MOVIE_COUNT_PER_STEP;
+
+    const showMoreButtonComponent = new ShowMoreButtonView();
+
+    render(this.#moviesListComponent, showMoreButtonComponent);
+
+    showMoreButtonComponent.setClickHandler(() => {
+      this.#movieCards
+        .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
+        .forEach((movieCard) => this.#renderMovieCard(movieCard));
+
+      renderedMovieCount += MOVIE_COUNT_PER_STEP;
+
+      if (renderedMovieCount >= this.#movieCards.length) {
+        remove(showMoreButtonComponent);
+      }
+    });
   }
 
   #renderMainContainer = () => {
