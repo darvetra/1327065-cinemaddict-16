@@ -1,6 +1,5 @@
 import {customAppendChild, customRemoveChild, remove, render, RenderPosition} from '../utils/render.js';
 
-import MainNavigationView from '../view/main-navigation-view';
 import SortView from '../view/sort-view';
 import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
@@ -19,7 +18,6 @@ export default class MovieListPresenter {
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
   #sortComponent = new SortView();
-  #navigationComponent = new MainNavigationView();
   #noMoviesComponent = new NoFilmsView();
 
   #movieCards = [];
@@ -43,9 +41,6 @@ export default class MovieListPresenter {
     render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderNavigation = () => {
-    render(this.#moviesSectionComponent, this.#navigationComponent, RenderPosition.AFTERBEGIN);
-  }
 
   #renderMovieCard = (movie, container) => {
     const bodyElement = document.querySelector('body');
@@ -106,7 +101,10 @@ export default class MovieListPresenter {
 
     const showMoreButtonComponent = new ShowMoreButtonView();
 
-    render(this.#moviesListComponent, showMoreButtonComponent);
+    // Дублируется поиск filmsListElement через querySelector. Создать отдельную вьюху?
+    const filmsListElement = this.#mainContainer.querySelector('.films-list');
+
+    render(filmsListElement, showMoreButtonComponent);
 
     showMoreButtonComponent.setClickHandler(() => {
       this.#movieCards
@@ -121,10 +119,10 @@ export default class MovieListPresenter {
     });
   }
 
-  #renderExtraMovies = (title) => {
+  #renderExtraMovies = () => {
     const filmsElement = this.#mainContainer.querySelector('.films');
 
-    render(filmsElement, new FilmsListExtraView(title));
+    render(filmsElement, new FilmsListExtraView('Top rated'));
     render(filmsElement, new FilmsListExtraView('Most commented'));
 
     const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
@@ -153,9 +151,6 @@ export default class MovieListPresenter {
   #renderMainContainer = () => {
     // sort
     this.#renderSort();
-
-    // menu
-    this.#renderNavigation();
 
     // content
     if (this.#movieCards.length === 0) {
