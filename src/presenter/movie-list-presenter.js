@@ -7,10 +7,11 @@ import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
-// import FilmsListExtraView from '../view/films-list-extra-view';
+import FilmsListExtraView from '../view/films-list-extra-view';
 import FilmDetailsView from '../view/film-details-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
+const MOVIE_COUNT_EXTRA = 2;
 
 export default class MovieListPresenter {
   #mainContainer = null;
@@ -46,7 +47,7 @@ export default class MovieListPresenter {
     render(this.#moviesSectionComponent, this.#navigationComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderMovieCard = (movie) => {
+  #renderMovieCard = (movie, container) => {
     const bodyElement = document.querySelector('body');
 
     const movieCardComponent = new FilmCardView(movie);
@@ -82,7 +83,12 @@ export default class MovieListPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    render(this.#moviesListComponent, movieCardComponent);
+    if (container === undefined) {
+      render(this.#moviesListComponent, movieCardComponent);
+      return;
+    }
+
+    render(container, movieCardComponent);
   }
 
   #renderMovieCards = (from, to) => {
@@ -115,6 +121,27 @@ export default class MovieListPresenter {
     });
   }
 
+  #renderExtraMovies = (title) => {
+    const filmsElement = this.#mainContainer.querySelector('.films');
+
+    render(filmsElement, new FilmsListExtraView(title));
+    render(filmsElement, new FilmsListExtraView('Most commented'));
+
+    const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
+
+    // top rated movies
+    const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
+    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
+      this.#renderMovieCard(this.#movieCards[i], topRatedFilmsListContainerElement);
+    }
+
+    // most commented movies
+    const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
+    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
+      this.#renderMovieCard(this.#movieCards[i], mostCommentedFilmsListContainerElement);
+    }
+  }
+
   #renderMovieList = () => {
     this.#renderMovieCards(0, Math.min(this.#movieCards.length, MOVIE_COUNT_PER_STEP));
 
@@ -138,5 +165,6 @@ export default class MovieListPresenter {
 
     this.#renderMovieList();
 
+    this.#renderExtraMovies();
   }
 }
