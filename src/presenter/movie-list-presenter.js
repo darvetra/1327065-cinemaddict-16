@@ -1,15 +1,15 @@
-import {render, RenderPosition} from '../utils/render.js';
+import {customAppendChild, customRemoveChild, render, RenderPosition} from '../utils/render.js';
 
-import HeaderProfileView from '../view/header-profile-view';
-import MainNavigationView from '../view/main-navigation-view';
+// import HeaderProfileView from '../view/header-profile-view';
+// import MainNavigationView from '../view/main-navigation-view';
 import SortView from '../view/sort-view';
 import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
-import ShowMoreButtonView from '../view/show-more-button-view';
-import FilmsListExtraView from '../view/films-list-extra-view';
-import FooterStatisticsView from '../view/footer-statistics-view';
+// import ShowMoreButtonView from '../view/show-more-button-view';
+// import FilmsListExtraView from '../view/films-list-extra-view';
+// import FooterStatisticsView from '../view/footer-statistics-view';
 import FilmDetailsView from '../view/film-details-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -44,8 +44,42 @@ export default class MovieListPresenter {
   }
 
   #renderMovieCard = (movie) => {
-    // Метод, куда уйдёт логика созданию и рендерингу компонетов карточки фильма,
-    // текущая функция renderFilmCard в main.js
+    const bodyElement = document.querySelector('body');
+
+    const movieCardComponent = new FilmCardView(movie);
+    const movieDetailsComponent = new FilmDetailsView(movie);
+
+    const openPopup = () => {
+      customAppendChild(bodyElement, movieDetailsComponent);
+      bodyElement.classList.add('hide-overflow');
+    };
+
+    const closePopup = () => {
+      customRemoveChild(movieDetailsComponent);
+      bodyElement.classList.remove('hide-overflow');
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        closePopup();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    // клик по ссылке (открытие поп-апа)
+    movieCardComponent.setPopupClickHandler(() => {
+      openPopup(movie);
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    // Клик по кнопке закрытия поп-апа
+    movieDetailsComponent.setFormCloseHandler(() => {
+      closePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(this.#moviesListComponent, movieCardComponent);
   }
 
   #renderMovieCards = (from, to) => {
