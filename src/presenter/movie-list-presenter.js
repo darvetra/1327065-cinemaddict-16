@@ -1,7 +1,6 @@
 import {customAppendChild, customRemoveChild, remove, render, RenderPosition} from '../utils/render.js';
 
-// import HeaderProfileView from '../view/header-profile-view';
-// import MainNavigationView from '../view/main-navigation-view';
+import MainNavigationView from '../view/main-navigation-view';
 import SortView from '../view/sort-view';
 import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
@@ -9,7 +8,6 @@ import FilmsListView from '../view/films-list-view';
 import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 // import FilmsListExtraView from '../view/films-list-extra-view';
-// import FooterStatisticsView from '../view/footer-statistics-view';
 import FilmDetailsView from '../view/film-details-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -20,6 +18,7 @@ export default class MovieListPresenter {
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
   #sortComponent = new SortView();
+  #navigationComponent = new MainNavigationView();
   #noMoviesComponent = new NoFilmsView();
 
   #movieCards = [];
@@ -41,6 +40,10 @@ export default class MovieListPresenter {
 
   #renderSort = () => {
     render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderNavigation = () => {
+    render(this.#moviesSectionComponent, this.#navigationComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderMovieCard = (movie) => {
@@ -123,6 +126,9 @@ export default class MovieListPresenter {
   #renderMainContainer = () => {
     // sort
     this.#renderSort();
+
+    // menu
+    this.#renderNavigation();
 
     // content
     if (this.#movieCards.length === 0) {
