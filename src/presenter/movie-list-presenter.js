@@ -112,6 +112,14 @@ export default class MovieListPresenter {
     });
   }
 
+  #renderMovieList = () => {
+    this.#renderMovieCards(0, Math.min(this.#movieCards.length, MOVIE_COUNT_PER_STEP));
+
+    if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
+      this.#renderShowMoreButton();
+    }
+  }
+
   #renderMainContainer = () => {
     // sort
     this.#renderSort();
@@ -122,10 +130,7 @@ export default class MovieListPresenter {
       return;
     }
 
-    this.#renderMovieCards(0, Math.min(this.#movieCards.length, MOVIE_COUNT_PER_STEP));
+    this.#renderMovieList();
 
-    if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
-      this.#renderShowMoreButton();
-    }
   }
 }
