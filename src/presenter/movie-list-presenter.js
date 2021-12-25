@@ -15,6 +15,9 @@ const MOVIE_COUNT_EXTRA = 2;
 export default class MovieListPresenter {
   #mainContainer = null;
 
+  #movieCardComponent = null;
+  #movieDetailsComponent = null;
+
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
   #sortComponent = new SortView();
@@ -47,16 +50,16 @@ export default class MovieListPresenter {
   #renderMovieCard = (movie, container) => {
     const bodyElement = document.querySelector('body');
 
-    const movieCardComponent = new FilmCardView(movie);
-    const movieDetailsComponent = new FilmDetailsView(movie);
+    this.#movieCardComponent = new FilmCardView(movie);
+    this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     const openPopup = () => {
-      customAppendChild(bodyElement, movieDetailsComponent);
+      customAppendChild(bodyElement, this.#movieCardComponent);
       bodyElement.classList.add('hide-overflow');
     };
 
     const closePopup = () => {
-      customRemoveChild(movieDetailsComponent);
+      customRemoveChild(this.#movieDetailsComponent);
       bodyElement.classList.remove('hide-overflow');
     };
 
@@ -69,23 +72,23 @@ export default class MovieListPresenter {
     };
 
     // клик по ссылке (открытие поп-апа)
-    movieCardComponent.setPopupClickHandler(() => {
+    this.#movieCardComponent.setPopupClickHandler(() => {
       openPopup(movie);
       document.addEventListener('keydown', onEscKeyDown);
     });
 
     // Клик по кнопке закрытия поп-апа
-    movieDetailsComponent.setFormCloseHandler(() => {
+    this.#movieDetailsComponent.setFormCloseHandler(() => {
       closePopup();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
     if (container === undefined) {
-      render(this.#moviesListComponent, movieCardComponent);
+      render(this.#moviesListComponent, this.#movieCardComponent);
       return;
     }
 
-    render(container, movieCardComponent);
+    render(container, this.#movieCardComponent);
   }
 
   #renderMovieCards = (from, to) => {
@@ -142,6 +145,11 @@ export default class MovieListPresenter {
     if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
       this.#renderShowMoreButton();
     }
+  }
+
+  destroy = () => {
+    remove(this.#movieCardComponent);
+    remove(this.#movieDetailsComponent);
   }
 
   #renderMainContainer = () => {

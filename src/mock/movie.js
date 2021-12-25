@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 import {getRandomDecimalInclusive, getRandomInteger, getRandomIntInclusive} from '../utils/common';
 
@@ -199,7 +200,7 @@ const generateArrayTemplate = (arrayTemplate, number) => {
  * @returns {{filmInfo: {actors: string[], director: string, release: {date: string, releaseCountry: string}, genre: string[], totalRating: number, runtime: number, description: string, ageRating: number, writers: string[], title: string, poster: string}, id: number}}
  */
 export const generateMovie = () => ({
-  id: getRandomInteger(0, 42),
+  id: nanoid(),
   comments: new Array(getRandomIntInclusive(1, MAXIMUM_NUMBER_OF_COMMENTS)).fill().map(() => generateComment()),
   filmInfo: {
     title: generateMovieTitle(),
