@@ -54,7 +54,7 @@ export default class MovieListPresenter {
     this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     const openPopup = () => {
-      customAppendChild(bodyElement, this.#movieCardComponent);
+      customAppendChild(bodyElement, this.#movieDetailsComponent);
       bodyElement.classList.add('hide-overflow');
     };
 
