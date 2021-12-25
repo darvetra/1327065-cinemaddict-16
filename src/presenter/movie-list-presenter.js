@@ -1,22 +1,19 @@
-import {customAppendChild, customRemoveChild, remove, render, RenderPosition} from '../utils/render.js';
+import {remove, render, RenderPosition} from '../utils/render.js';
+
+import MoviePresenter from './movie-presenter';
 
 import SortView from '../view/sort-view';
 import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
-import FilmCardView from '../view/film-card-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
 import FilmsListExtraView from '../view/films-list-extra-view';
-import FilmDetailsView from '../view/film-details-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const MOVIE_COUNT_EXTRA = 2;
 
 export default class MovieListPresenter {
   #mainContainer = null;
-
-  #movieCardComponent = null;
-  #movieDetailsComponent = null;
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
@@ -47,48 +44,9 @@ export default class MovieListPresenter {
   }
 
 
-  #renderMovieCard = (movie, container) => {
-    const bodyElement = document.querySelector('body');
-
-    this.#movieCardComponent = new FilmCardView(movie);
-    this.#movieDetailsComponent = new FilmDetailsView(movie);
-
-    const openPopup = () => {
-      customAppendChild(bodyElement, this.#movieDetailsComponent);
-      bodyElement.classList.add('hide-overflow');
-    };
-
-    const closePopup = () => {
-      customRemoveChild(this.#movieDetailsComponent);
-      bodyElement.classList.remove('hide-overflow');
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    // клик по ссылке (открытие поп-апа)
-    this.#movieCardComponent.setPopupClickHandler(() => {
-      openPopup(movie);
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    // Клик по кнопке закрытия поп-апа
-    this.#movieDetailsComponent.setFormCloseHandler(() => {
-      closePopup();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    if (container === undefined) {
-      render(this.#moviesListComponent, this.#movieCardComponent);
-      return;
-    }
-
-    render(container, this.#movieCardComponent);
+  #renderMovieCard = (movie, container = this.#moviesListComponent) => {
+    const moviePresenter = new MoviePresenter(container);
+    moviePresenter.init(movie);
   }
 
   #renderMovieCards = (from, to) => {
@@ -145,11 +103,6 @@ export default class MovieListPresenter {
     if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
       this.#renderShowMoreButton();
     }
-  }
-
-  destroy = () => {
-    remove(this.#movieCardComponent);
-    remove(this.#movieDetailsComponent);
   }
 
   #renderMainContainer = () => {
