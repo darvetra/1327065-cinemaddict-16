@@ -19,8 +19,10 @@ export default class MovieListPresenter {
   #moviesListComponent = new FilmsListView();
   #sortComponent = new SortView();
   #noMoviesComponent = new NoFilmsView();
+  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #movieCards = [];
+  #renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -96,27 +98,21 @@ export default class MovieListPresenter {
     render(this.#moviesSectionComponent, this.#noMoviesComponent);
   }
 
+  #handleShowMoreButtonClick = () => {
+    this.#renderMovieCards(this.#renderedMovieCount, this.#renderedMovieCount + MOVIE_COUNT_PER_STEP);
+    this.#renderedMovieCount += MOVIE_COUNT_PER_STEP;
+
+    if (this.#renderedMovieCount >= this.#movieCards.length) {
+      remove(this.#showMoreButtonComponent);
+    }
+  }
+
   #renderShowMoreButton = () => {
-    let renderedMovieCount = MOVIE_COUNT_PER_STEP;
-
-    const showMoreButtonComponent = new ShowMoreButtonView();
-
     // Дублируется поиск filmsListElement через querySelector. Создать отдельную вьюху?
     const filmsListElement = this.#mainContainer.querySelector('.films-list');
+    render(filmsListElement, this.#showMoreButtonComponent);
 
-    render(filmsListElement, showMoreButtonComponent);
-
-    showMoreButtonComponent.setClickHandler(() => {
-      this.#movieCards
-        .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
-        .forEach((movieCard) => this.#renderMovieCard(movieCard));
-
-      renderedMovieCount += MOVIE_COUNT_PER_STEP;
-
-      if (renderedMovieCount >= this.#movieCards.length) {
-        remove(showMoreButtonComponent);
-      }
-    });
+    this.#showMoreButtonComponent.setClickHandler(this.#handleShowMoreButtonClick);
   }
 
   #renderExtraMovies = () => {
