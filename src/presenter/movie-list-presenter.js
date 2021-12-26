@@ -1,4 +1,5 @@
 import {remove, render, RenderPosition} from '../utils/render.js';
+import {updateItem} from '../utils/common';
 
 import MoviePresenter from './movie-presenter';
 
@@ -39,6 +40,12 @@ export default class MovieListPresenter {
 
     this.#renderMainContainer();
   }
+
+  #handleMovieChange = (updatedMovie) => {
+    this.#movieCards = updateItem(this.#movieCards, updatedMovie);
+    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
+  }
+
 
   #renderSort = () => {
     render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
