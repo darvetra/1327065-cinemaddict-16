@@ -23,6 +23,7 @@ export default class MovieListPresenter {
 
   #movieCards = [];
   #renderedMovieCount = MOVIE_COUNT_PER_STEP;
+  #moviePresenter = new Map();
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -47,6 +48,7 @@ export default class MovieListPresenter {
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
     const moviePresenter = new MoviePresenter(container);
     moviePresenter.init(movie);
+    this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
   #renderMovieCards = (from, to) => {
@@ -95,6 +97,13 @@ export default class MovieListPresenter {
     for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
       this.#renderMovieCard(this.#movieCards[i], mostCommentedFilmsListContainerElement);
     }
+  }
+
+  #clearMovieList = () => {
+    this.#moviePresenter.forEach((presenter) => presenter.destroy());
+    this.#moviePresenter.clear();
+    this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
   }
 
   #renderMovieList = () => {
