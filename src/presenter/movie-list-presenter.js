@@ -41,7 +41,7 @@ export default class MovieListPresenter {
     this.#renderMainContainer();
   }
 
-  #handleMovieChange = (updatedMovie) => {
+  #handleMovieCardChange = (updatedMovie) => {
     this.#movieCards = updateItem(this.#movieCards, updatedMovie);
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
   }
@@ -53,7 +53,7 @@ export default class MovieListPresenter {
 
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
-    const moviePresenter = new MoviePresenter(container);
+    const moviePresenter = new MoviePresenter(container, this.#handleMovieCardChange);
     moviePresenter.init(movie);
     this.#moviePresenter.set(movie.id, moviePresenter);
   }

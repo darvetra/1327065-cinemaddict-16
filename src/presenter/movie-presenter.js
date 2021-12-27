@@ -1,30 +1,53 @@
-import {customAppendChild, customRemoveChild, remove, render} from '../utils/render.js';
+import {customAppendChild, customRemoveChild, remove, render, replace} from '../utils/render.js';
 
 import FilmCardView from '../view/film-card-view';
 import FilmDetailsView from '../view/film-details-view';
 
 export default class MoviePresenter {
   #movieListContainer = null;
+  #changeData = null;
 
   #movieCardComponent = null;
   #movieDetailsComponent = null;
 
   #movie = null;
 
-  constructor(movieListContainer) {
+  constructor(movieListContainer, changeData) {
     this.#movieListContainer = movieListContainer;
+    this.#changeData = changeData;
   }
 
   init = (movie) => {
     this.#movie = movie;
 
+    const prevMovieCardComponent = this.#movieCardComponent;
+    const prevMovieDetailsComponent = this.#movieDetailsComponent;
+
     this.#movieCardComponent = new FilmCardView(movie);
     this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     this.#movieCardComponent.setPopupClickHandler(this.#handlePopupOpen);
-    this.#movieDetailsComponent.setFormCloseHandler(this.#handlePopupClose);
+    this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
-    render(this.#movieListContainer, this.#movieCardComponent);
+    this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
+
+    if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
+      render(this.#movieListContainer, this.#movieCardComponent);
+      return;
+    }
+
+    // Проверка на наличие в DOM необходима,
+    // чтобы не пытаться заменить то, что не было отрисовано
+    if (this.#movieListContainer.element.contains(prevMovieCardComponent.element)) {
+      replace(this.#movieCardComponent, prevMovieCardComponent);
+    }
+
+    if (this.#movieListContainer.element.contains(prevMovieDetailsComponent.element)) {
+      replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+    }
+
+    remove(prevMovieCardComponent);
+    remove(prevMovieDetailsComponent);
   }
 
   #openPopup = () => {
@@ -50,6 +73,10 @@ export default class MoviePresenter {
   #handlePopupOpen = () => {
     this.#openPopup();
     document.addEventListener('keydown', this.#escKeyDownHandler);
+  }
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#movie, userDetails: {favorite: !this.#movie.userDetails.favorite}});
   }
 
   #handlePopupClose = () => {
