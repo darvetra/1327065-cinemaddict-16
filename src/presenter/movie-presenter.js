@@ -27,8 +27,9 @@ export default class MoviePresenter {
     this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     this.#movieCardComponent.setPopupClickHandler(this.#handlePopupOpen);
+    this.#movieCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-
     this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
@@ -73,6 +74,14 @@ export default class MoviePresenter {
   #handlePopupOpen = () => {
     this.#openPopup();
     document.addEventListener('keydown', this.#escKeyDownHandler);
+  }
+
+  #handleWatchlistClick = () => {
+    this.#changeData({...this.#movie, userDetails: {watchlist: !this.#movie.userDetails.watchlist}});
+  }
+
+  #handleAlreadyWatchedClick = () => {
+    this.#changeData({...this.#movie, userDetails: {alreadyWatched: !this.#movie.userDetails.alreadyWatched}});
   }
 
   #handleFavoriteClick = () => {
