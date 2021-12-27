@@ -77,15 +77,15 @@ export default class MoviePresenter {
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#movie.userDetails, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}});
+    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}});
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#movie.userDetails, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}});
+    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}});
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#movie.userDetails, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}});
+    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}});
   }
 
   #handlePopupClose = () => {
