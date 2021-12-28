@@ -41,6 +41,10 @@ export default class MovieListPresenter {
     this.#renderMainContainer();
   }
 
+  #handleModeChange = () => {
+    this.#moviePresenter.forEach((presenter) => presenter.resetView());
+  }
+
   #handleMovieCardChange = (updatedMovie) => {
     this.#movieCards = updateItem(this.#movieCards, updatedMovie);
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
@@ -53,7 +57,7 @@ export default class MovieListPresenter {
 
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
-    const moviePresenter = new MoviePresenter(container, this.#handleMovieCardChange);
+    const moviePresenter = new MoviePresenter(container, this.#handleMovieCardChange, this.#handleModeChange);
     moviePresenter.init(movie);
     this.#moviePresenter.set(movie.id, moviePresenter);
   }

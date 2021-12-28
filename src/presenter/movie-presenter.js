@@ -3,18 +3,26 @@ import {customAppendChild, customRemoveChild, remove, render, replace} from '../
 import FilmCardView from '../view/film-card-view';
 import FilmDetailsView from '../view/film-details-view';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};
+
 export default class MoviePresenter {
   #movieListContainer = null;
   #changeData = null;
+  #changeMode = null;
 
   #movieCardComponent = null;
   #movieDetailsComponent = null;
 
   #movie = null;
+  #mode = Mode.DEFAULT
 
-  constructor(movieListContainer, changeData) {
+  constructor(movieListContainer, changeData, changeMode) {
     this.#movieListContainer = movieListContainer;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (movie) => {
@@ -39,7 +47,7 @@ export default class MoviePresenter {
 
     // Проверка на наличие в DOM необходима,
     // чтобы не пытаться заменить то, что не было отрисовано
-    if (this.#movieListContainer.element.contains(prevMovieCardComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#movieCardComponent, prevMovieCardComponent);
     }
 
@@ -51,16 +59,25 @@ export default class MoviePresenter {
     remove(prevMovieDetailsComponent);
   }
 
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#closePopup();
+    }
+  }
+
   #openPopup = () => {
     const bodyElement = document.querySelector('body');
     customAppendChild(bodyElement, this.#movieDetailsComponent);
     bodyElement.classList.add('hide-overflow');
+    this.#changeMode();
+    this.#mode = Mode.POPUP;
   };
 
   #closePopup = () => {
     const bodyElement = document.querySelector('body');
     customRemoveChild(this.#movieDetailsComponent);
     bodyElement.classList.remove('hide-overflow');
+    this.#mode = Mode.DEFAULT;
   };
 
   #escKeyDownHandler = (evt) => {
