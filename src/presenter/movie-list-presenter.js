@@ -50,11 +50,16 @@ export default class MovieListPresenter {
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
   }
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+  }
 
   #renderSort = () => {
     render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
-
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
     const moviePresenter = new MoviePresenter(container, this.#handleMovieCardChange, this.#handleModeChange);
