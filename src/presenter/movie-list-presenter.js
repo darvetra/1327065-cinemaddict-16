@@ -91,16 +91,16 @@ export default class MovieListPresenter {
     render(filmsElement, new FilmsListExtraView('Top rated'));
     render(filmsElement, new FilmsListExtraView('Most commented'));
 
-    const filmListExtraElements = filmsElement.getElementsByClassName('films-list--extra');
+    const [topRatedElements, mostCommentedElements] = filmsElement.getElementsByClassName('films-list--extra');
 
     // top rated movies
-    const topRatedFilmsListContainerElement = filmListExtraElements[0].querySelector('.films-list__container');
+    const topRatedFilmsListContainerElement = topRatedElements.querySelector('.films-list__container');
     for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
       this.#renderMovieCard(this.#movieCards[i], topRatedFilmsListContainerElement);
     }
 
     // most commented movies
-    const mostCommentedFilmsListContainerElement = filmListExtraElements[1].querySelector('.films-list__container');
+    const mostCommentedFilmsListContainerElement = mostCommentedElements.querySelector('.films-list__container');
     for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
       this.#renderMovieCard(this.#movieCards[i], mostCommentedFilmsListContainerElement);
     }
