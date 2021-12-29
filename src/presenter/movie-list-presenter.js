@@ -1,5 +1,8 @@
-import {remove, render, RenderPosition} from '../utils/render.js';
+import {remove, render, RenderPosition} from '../utils/render';
 import {updateItem} from '../utils/common';
+import {sortByRating, sortByDate} from '../utils/sort';
+
+import {SortType} from '../const.js';
 
 import MoviePresenter from './movie-presenter';
 
@@ -25,6 +28,8 @@ export default class MovieListPresenter {
   #movieCards = [];
   #renderedMovieCount = MOVIE_COUNT_PER_STEP;
   #moviePresenter = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedMovieCards = [];
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -32,6 +37,10 @@ export default class MovieListPresenter {
 
   init = (movieCards) => {
     this.#movieCards = [...movieCards];
+    // 1. В отличии от сортировки по любому параметру,
+    // исходный порядок можно сохранить только одним способом -
+    // сохранив исходный массив:
+    this.#sourcedMovieCards = [...movieCards];
 
     render(this.#mainContainer, this.#moviesSectionComponent);
 
@@ -47,13 +56,43 @@ export default class MovieListPresenter {
 
   #handleMovieCardChange = (updatedMovie) => {
     this.#movieCards = updateItem(this.#movieCards, updatedMovie);
+    this.#sourcedMovieCards = updateItem(this.#sourcedMovieCards, updatedMovie);
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
+  }
+
+  #sortMovieCards = (sortType) => {
+    // 2. Этот исходный массив карточек необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _movieCards
+    switch (sortType) {
+      case SortType.DATE:
+        this.#movieCards.sort(sortByDate);
+        break;
+      case SortType.RATING:
+        this.#movieCards.sort(sortByRating);
+        break;
+      default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _movieCards исходный массив
+        this.#movieCards = [...this.#sourcedMovieCards];
+    }
+
+    this.#currentSortType = sortType;
   }
 
   #handleSortTypeChange = (sortType) => {
     // - Сортируем задачи
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortMovieCards(sortType);
+
     // - Очищаем список
+    this.#clearMovieList();
+
     // - Рендерим список заново
+    this.#renderMovieList();
   }
 
   #renderSort = () => {
