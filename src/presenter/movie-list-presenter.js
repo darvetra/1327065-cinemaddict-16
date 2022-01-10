@@ -21,6 +21,8 @@ export default class MovieListPresenter {
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
+  #moviesListTopRatedComponent = new FilmsListView();
+  #moviesListMostCommentedComponent = new FilmsListView();
   #sortComponent = new SortView();
   #noMoviesComponent = new NoFilmsView();
   #showMoreButtonComponent = new ShowMoreButtonView();
@@ -106,10 +108,10 @@ export default class MovieListPresenter {
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
-  #renderMovieCards = (from, to) => {
+  #renderMovieCards = (from, to, container) => {
     this.#movieCards
       .slice(from, to)
-      .forEach((movieCard) => this.#renderMovieCard(movieCard));
+      .forEach((movieCard) => this.#renderMovieCard(movieCard, container));
   }
 
   #renderNoMovies = () => {
@@ -142,16 +144,12 @@ export default class MovieListPresenter {
     const [topRatedElements, mostCommentedElements] = filmsElement.getElementsByClassName('films-list--extra');
 
     // top rated movies
-    const topRatedFilmsListContainerElement = topRatedElements.querySelector('.films-list__container');
-    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-      this.#renderMovieCard(this.#movieCards[i], topRatedFilmsListContainerElement);
-    }
+    render(topRatedElements, this.#moviesListTopRatedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#moviesListTopRatedComponent);
 
     // most commented movies
-    const mostCommentedFilmsListContainerElement = mostCommentedElements.querySelector('.films-list__container');
-    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-      this.#renderMovieCard(this.#movieCards[i], mostCommentedFilmsListContainerElement);
-    }
+    render(mostCommentedElements, this.#moviesListMostCommentedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#moviesListMostCommentedComponent);
   }
 
   #clearMovieList = () => {
