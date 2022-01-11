@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {updateItem} from '../utils/common';
-import {sortByRating, sortByDate} from '../utils/sort';
+import {sortByRating, sortByDate, sortByCommentsCount} from '../utils/sort';
 
 import {SortType} from '../const.js';
 
@@ -32,6 +32,9 @@ export default class MovieListPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #sourcedMovieCards = [];
+
+  #topRatedMovieCards = [];
+  #mostCommentedMovieCards = [];
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -108,8 +111,8 @@ export default class MovieListPresenter {
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
-  #renderMovieCards = (from, to, container) => {
-    this.#movieCards
+  #renderMovieCards = (from, to, cards = this.#movieCards, container) => {
+    cards
       .slice(from, to)
       .forEach((movieCard) => this.#renderMovieCard(movieCard, container));
   }
@@ -136,6 +139,9 @@ export default class MovieListPresenter {
   }
 
   #renderExtraMovies = () => {
+    this.#topRatedMovieCards = [...this.#movieCards.sort(sortByRating)];
+    this.#mostCommentedMovieCards = [...this.#movieCards.sort(sortByCommentsCount)];
+
     const filmsElement = this.#mainContainer.querySelector('.films');
 
     render(filmsElement, new FilmsListExtraView('Top rated'));
@@ -145,11 +151,11 @@ export default class MovieListPresenter {
 
     // top rated movies
     render(topRatedElements, this.#moviesListTopRatedComponent);
-    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#moviesListTopRatedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#topRatedMovieCards, this.#moviesListTopRatedComponent);
 
     // most commented movies
     render(mostCommentedElements, this.#moviesListMostCommentedComponent);
-    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#moviesListMostCommentedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#mostCommentedMovieCards, this.#moviesListMostCommentedComponent);
   }
 
   #clearMovieList = () => {

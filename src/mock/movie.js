@@ -4,7 +4,7 @@ import {nanoid} from 'nanoid';
 import {getRandomDecimalInclusive, getRandomInteger, getRandomIntInclusive} from '../utils/common';
 
 const MAXIMUM_NUMBER_OF_SENTENCES = 5;
-const MAXIMUM_NUMBER_OF_COMMENTS = 5;
+const MAXIMUM_NUMBER_OF_COMMENTS = 10;
 const MAXIMUM_NUMBER_OF_GENRES = 3;
 const MAXIMUM_NUMBER_OF_WRITERS = 2;
 const MAXIMUM_NUMBER_OF_ACTORS = 3;
