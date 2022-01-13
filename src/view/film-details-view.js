@@ -70,7 +70,7 @@ const createEmojisListTemplate = (currentEmoji) => (
 const createEmojiLabelTemplate = (currentEmoji) => `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">`;
 
 const createFilmDetailsTemplate = (data = {}) => {
-  const {filmInfo, comments, userDetails, emotion} = data;
+  const {filmInfo, comments, userDetails, commentEmotion} = data;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
@@ -93,9 +93,9 @@ const createFilmDetailsTemplate = (data = {}) => {
 
   const emojisListTemplate = createEmojisListTemplate();
 
-  const emojiLabelTemplate = createEmojiLabelTemplate(emotion);
+  const emojiLabelTemplate = createEmojiLabelTemplate(commentEmotion);
 
-  const emojiLabel = emotion
+  const emojiLabel = commentEmotion
     ? emojiLabelTemplate
     : '';
 
@@ -220,12 +220,16 @@ export default class FilmDetailsView extends AbstractView {
   }
 
   // Метод updateData, который будет обновлять данные в свойстве _data, а потом вызывать обновление шаблона
-  updateData = (update) => {
+  updateData = (update, justDataUpdating) => {
     if (!update) {
       return;
     }
 
     this._data = {...this._data, ...update};
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -256,6 +260,8 @@ export default class FilmDetailsView extends AbstractView {
   }
 
   #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__comment-input')
+      .addEventListener('input', this.#descriptionInputHandler);
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('change', this.#emojiChangeHandler);
   }
@@ -263,8 +269,15 @@ export default class FilmDetailsView extends AbstractView {
   #emojiChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      emotion: evt.target.value,
+      commentEmotion: evt.target.value,
     });
+  }
+
+  #descriptionInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      description: evt.target.value,
+    }, true);
   }
 
   #popupCloseHandler = (evt) => {
@@ -273,13 +286,13 @@ export default class FilmDetailsView extends AbstractView {
   }
 
   static parseMovieToData = (movie) => ({...movie,
-    emotion: movie.emotion !== undefined,
+    commentEmotion: movie.commentEmotion !== undefined,
   });
 
   static parseDataToMovie = (data) => {
     const movie = {...data};
 
-    delete movie.emotion;
+    delete movie.commentEmotion;
 
     return movie;
   }
