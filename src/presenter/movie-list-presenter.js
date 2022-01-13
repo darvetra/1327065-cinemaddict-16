@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {updateItem} from '../utils/common';
-import {sortByRating, sortByDate} from '../utils/sort';
+import {sortByRating, sortByDate, sortByCommentsCount} from '../utils/sort';
 
 import {SortType} from '../const.js';
 
@@ -21,6 +21,8 @@ export default class MovieListPresenter {
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
+  #moviesListTopRatedComponent = new FilmsListView();
+  #moviesListMostCommentedComponent = new FilmsListView();
   #sortComponent = new SortView();
   #noMoviesComponent = new NoFilmsView();
   #showMoreButtonComponent = new ShowMoreButtonView();
@@ -30,6 +32,9 @@ export default class MovieListPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #sourcedMovieCards = [];
+
+  #topRatedMovieCards = [];
+  #mostCommentedMovieCards = [];
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -106,10 +111,10 @@ export default class MovieListPresenter {
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
-  #renderMovieCards = (from, to) => {
-    this.#movieCards
+  #renderMovieCards = (from, to, cards = this.#movieCards, container) => {
+    cards
       .slice(from, to)
-      .forEach((movieCard) => this.#renderMovieCard(movieCard));
+      .forEach((movieCard) => this.#renderMovieCard(movieCard, container));
   }
 
   #renderNoMovies = () => {
@@ -134,6 +139,9 @@ export default class MovieListPresenter {
   }
 
   #renderExtraMovies = () => {
+    this.#topRatedMovieCards = [...this.#movieCards.sort(sortByRating)];
+    this.#mostCommentedMovieCards = [...this.#movieCards.sort(sortByCommentsCount)];
+
     const filmsElement = this.#mainContainer.querySelector('.films');
 
     render(filmsElement, new FilmsListExtraView('Top rated'));
@@ -142,16 +150,12 @@ export default class MovieListPresenter {
     const [topRatedElements, mostCommentedElements] = filmsElement.getElementsByClassName('films-list--extra');
 
     // top rated movies
-    const topRatedFilmsListContainerElement = topRatedElements.querySelector('.films-list__container');
-    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-      this.#renderMovieCard(this.#movieCards[i], topRatedFilmsListContainerElement);
-    }
+    render(topRatedElements, this.#moviesListTopRatedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#topRatedMovieCards, this.#moviesListTopRatedComponent);
 
     // most commented movies
-    const mostCommentedFilmsListContainerElement = mostCommentedElements.querySelector('.films-list__container');
-    for (let i = 0; i < MOVIE_COUNT_EXTRA; i++) {
-      this.#renderMovieCard(this.#movieCards[i], mostCommentedFilmsListContainerElement);
-    }
+    render(mostCommentedElements, this.#moviesListMostCommentedComponent);
+    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#mostCommentedMovieCards, this.#moviesListMostCommentedComponent);
   }
 
   #clearMovieList = () => {
