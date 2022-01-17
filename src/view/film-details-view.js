@@ -246,6 +246,7 @@ export default class FilmDetailsView extends SmartView {
       .addEventListener('input', this.#descriptionInputHandler);
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('change', this.#emojiChangeHandler);
+    this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
   #emojiChangeHandler = (evt) => {
@@ -272,14 +273,22 @@ export default class FilmDetailsView extends SmartView {
     this._callback.formSubmit(FilmDetailsView.parseDataToMovie(this._data));
   }
 
+  #scrollPositionHandler = () => {
+    this.updateData({
+      scrollPosition: this.element.scrollTop,
+    }, true);
+  }
+
   static parseMovieToData = (movie) => ({...movie,
     commentEmotion: movie.commentEmotion !== undefined,
+    scrollPosition: 0,
   });
 
   static parseDataToMovie = (data) => {
     const movie = {...data};
 
     delete movie.commentEmotion;
+    delete movie.scrollPosition;
 
     return movie;
   }
