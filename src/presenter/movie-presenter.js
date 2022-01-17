@@ -61,6 +61,7 @@ export default class MoviePresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#movieDetailsComponent.reset(this.#movie);
       this.#closePopup();
     }
   }
@@ -83,6 +84,7 @@ export default class MoviePresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#movieDetailsComponent.reset(this.#movie);
       this.#closePopup();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }

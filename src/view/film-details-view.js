@@ -219,6 +219,12 @@ export default class FilmDetailsView extends SmartView {
     return createFilmDetailsTemplate(this._data);
   }
 
+  reset = (movie) => {
+    this.updateData(
+      FilmDetailsView.parseMovieToData(movie),
+    );
+  }
+
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
