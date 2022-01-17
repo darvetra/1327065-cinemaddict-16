@@ -219,9 +219,16 @@ export default class FilmDetailsView extends SmartView {
     return createFilmDetailsTemplate(this._data);
   }
 
+  reset = (movie) => {
+    this.updateData(
+      FilmDetailsView.parseMovieToData(movie),
+    );
+  }
+
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
+    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   setPopupCloseHandler = (callback) => {
@@ -229,11 +236,17 @@ export default class FilmDetailsView extends SmartView {
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#popupCloseHandler);
   }
 
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  }
+
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__comment-input')
       .addEventListener('input', this.#descriptionInputHandler);
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('change', this.#emojiChangeHandler);
+    this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
   #emojiChangeHandler = (evt) => {
@@ -255,14 +268,27 @@ export default class FilmDetailsView extends SmartView {
     this._callback.popupClose(FilmDetailsView.parseDataToMovie(this._data));
   }
 
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(FilmDetailsView.parseDataToMovie(this._data));
+  }
+
+  #scrollPositionHandler = () => {
+    this.updateData({
+      scrollPosition: this.element.scrollTop,
+    }, true);
+  }
+
   static parseMovieToData = (movie) => ({...movie,
     commentEmotion: movie.commentEmotion !== undefined,
+    scrollPosition: 0,
   });
 
   static parseDataToMovie = (data) => {
     const movie = {...data};
 
     delete movie.commentEmotion;
+    delete movie.scrollPosition;
 
     return movie;
   }
