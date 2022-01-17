@@ -228,11 +228,17 @@ export default class FilmDetailsView extends SmartView {
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
+    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   setPopupCloseHandler = (callback) => {
     this._callback.popupClose = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#popupCloseHandler);
+  }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
   #setInnerHandlers = () => {
@@ -259,6 +265,11 @@ export default class FilmDetailsView extends SmartView {
   #popupCloseHandler = (evt) => {
     evt.preventDefault();
     this._callback.popupClose(FilmDetailsView.parseDataToMovie(this._data));
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(FilmDetailsView.parseDataToMovie(this._data));
   }
 
   static parseMovieToData = (movie) => ({...movie,

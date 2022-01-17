@@ -39,6 +39,7 @@ export default class MoviePresenter {
     this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
+    this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieListContainer, this.#movieCardComponent);
@@ -90,9 +91,16 @@ export default class MoviePresenter {
     }
   };
 
+  #ctrlEnterKeyDownHandler = (evt) => {
+    if (evt.ctrlKey && evt.keyCode === 13) {
+      evt.preventDefault();
+    }
+  };
+
   #handlePopupOpen = () => {
     this.#openPopup();
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    document.addEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   }
 
   #handleWatchlistClick = () => {
@@ -110,6 +118,11 @@ export default class MoviePresenter {
   #handlePopupClose = () => {
     this.#closePopup();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    document.removeEventListener('keydown', this.#ctrlEnterKeyDownHandler);
+  }
+
+  #handleFormSubmit = (movie) => {
+    this.#changeData(movie);
   }
 
   destroy = () => {
