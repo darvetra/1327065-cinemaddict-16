@@ -33,7 +33,7 @@ render(siteHeaderElement, new HeaderProfileView());
 render(siteMainElement, new MainNavigationView(filters), RenderPosition.AFTERBEGIN);
 
 // content
-movieListPresenter.init(movies);
+movieListPresenter.init();
 
 // footer
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
