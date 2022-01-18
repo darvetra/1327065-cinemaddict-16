@@ -18,6 +18,7 @@ const MOVIE_COUNT_EXTRA = 2;
 
 export default class MovieListPresenter {
   #mainContainer = null;
+  #moviesModel = null;
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
@@ -36,8 +37,13 @@ export default class MovieListPresenter {
   #topRatedMovieCards = [];
   #mostCommentedMovieCards = [];
 
-  constructor(mainContainer) {
+  constructor(mainContainer, moviesModel) {
     this.#mainContainer = mainContainer;
+    this.#moviesModel = moviesModel;
+  }
+
+  get movies() {
+    return this.#moviesModel.movies;
   }
 
   init = (movieCards) => {
