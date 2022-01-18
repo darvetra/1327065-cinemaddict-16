@@ -1,5 +1,4 @@
 import {remove, render, RenderPosition} from '../utils/render';
-import {updateItem} from '../utils/common';
 import {sortByRating, sortByDate, sortByCommentsCount} from '../utils/sort';
 
 import {SortType} from '../const.js';
@@ -28,12 +27,12 @@ export default class MovieListPresenter {
   #noMoviesComponent = new NoFilmsView();
   #showMoreButtonComponent = new ShowMoreButtonView();
 
-  #movieCards = [];
-  #renderedMovieCount = MOVIE_COUNT_PER_STEP;
+  #renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
-  #sourcedMovieCards = [];
 
+  // переделать блок рекомендованных фильмов
+  // соответственно - избавиться от массивов ниже
   #topRatedMovieCards = [];
   #mostCommentedMovieCards = [];
 
@@ -42,17 +41,19 @@ export default class MovieListPresenter {
     this.#moviesModel = moviesModel;
   }
 
+  // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
   get movies() {
+    switch (this.#currentSortType) {
+      case SortType.DATE:
+        return [...this.#moviesModel.movies].sort(sortByDate);
+      case SortType.RATING:
+        return [...this.#moviesModel.movies].sort(sortByRating);
+    }
+
     return this.#moviesModel.movies;
   }
 
-  init = (movieCards) => {
-    this.#movieCards = [...movieCards];
-    // 1. В отличии от сортировки по любому параметру,
-    // исходный порядок можно сохранить только одним способом -
-    // сохранив исходный массив:
-    this.#sourcedMovieCards = [...movieCards];
-
+  init = () => {
     render(this.#mainContainer, this.#moviesSectionComponent);
 
     const filmsListElement = this.#mainContainer.querySelector('.films-list');
@@ -66,43 +67,22 @@ export default class MovieListPresenter {
   }
 
   #handleMovieCardChange = (updatedMovie) => {
-    this.#movieCards = updateItem(this.#movieCards, updatedMovie);
-    this.#sourcedMovieCards = updateItem(this.#sourcedMovieCards, updatedMovie);
+    // Здесь будем вызывать обновление модели
     this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
   }
 
-  #sortMovieCards = (sortType) => {
-    // 2. Этот исходный массив карточек необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _movieCards
-    switch (sortType) {
-      case SortType.DATE:
-        this.#movieCards.sort(sortByDate);
-        break;
-      case SortType.RATING:
-        this.#movieCards.sort(sortByRating);
-        break;
-      default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _movieCards исходный массив
-        this.#movieCards = [...this.#sourcedMovieCards];
-    }
-
-    this.#currentSortType = sortType;
-  }
-
   #handleSortTypeChange = (sortType) => {
-    // - Сортируем задачи
+    // Сортируем задачи
     if (this.#currentSortType === sortType) {
       return;
     }
 
-    this.#sortMovieCards(sortType);
+    this.#currentSortType = sortType;
 
-    // - Очищаем список
+    // Очищаем список
     this.#clearMovieList();
 
-    // - Рендерим список заново
+    // Рендерим список заново
     this.#renderMovieList();
   }
 
@@ -117,10 +97,8 @@ export default class MovieListPresenter {
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
-  #renderMovieCards = (from, to, cards = this.#movieCards, container) => {
-    cards
-      .slice(from, to)
-      .forEach((movieCard) => this.#renderMovieCard(movieCard, container));
+  #renderMovieCards = (cards = this.movies, container) => {
+    cards.forEach((movieCard) => this.#renderMovieCard(movieCard, container));
   }
 
   #renderNoMovies = () => {
@@ -128,10 +106,14 @@ export default class MovieListPresenter {
   }
 
   #handleShowMoreButtonClick = () => {
-    this.#renderMovieCards(this.#renderedMovieCount, this.#renderedMovieCount + MOVIE_COUNT_PER_STEP);
-    this.#renderedMovieCount += MOVIE_COUNT_PER_STEP;
+    const movieCardsCount = this.movies.length;
+    const newRenderedMovieCardCount = Math.min(movieCardsCount, this.#renderedMovieCardCount + MOVIE_COUNT_PER_STEP);
+    const movies = this.movies.slice(this.#renderedMovieCardCount, newRenderedMovieCardCount);
 
-    if (this.#renderedMovieCount >= this.#movieCards.length) {
+    this.#renderMovieCards(movies);
+    this.#renderedMovieCardCount = newRenderedMovieCardCount;
+
+    if (this.#renderedMovieCardCount >= movieCardsCount) {
       remove(this.#showMoreButtonComponent);
     }
   }
@@ -145,8 +127,8 @@ export default class MovieListPresenter {
   }
 
   #renderExtraMovies = () => {
-    this.#topRatedMovieCards = [...this.#movieCards.sort(sortByRating)];
-    this.#mostCommentedMovieCards = [...this.#movieCards.sort(sortByCommentsCount)];
+    this.#topRatedMovieCards = [...this.movies.sort(sortByRating)];
+    this.#mostCommentedMovieCards = [...this.movies.sort(sortByCommentsCount)];
 
     const filmsElement = this.#mainContainer.querySelector('.films');
 
@@ -167,14 +149,17 @@ export default class MovieListPresenter {
   #clearMovieList = () => {
     this.#moviePresenter.forEach((presenter) => presenter.destroy());
     this.#moviePresenter.clear();
-    this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
+    this.#renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
     remove(this.#showMoreButtonComponent);
   }
 
   #renderMovieList = () => {
-    this.#renderMovieCards(0, Math.min(this.#movieCards.length, MOVIE_COUNT_PER_STEP));
+    const movieCardsCount = this.movies.length;
+    const movies = this.movies.slice(0, Math.min(movieCardsCount, MOVIE_COUNT_PER_STEP));
 
-    if (this.#movieCards.length > MOVIE_COUNT_PER_STEP) {
+    this.#renderMovieCards(movies);
+
+    if (movieCardsCount > MOVIE_COUNT_PER_STEP) {
       this.#renderShowMoreButton();
     }
   }
@@ -184,7 +169,7 @@ export default class MovieListPresenter {
     this.#renderSort();
 
     // content
-    if (this.#movieCards.length === 0) {
+    if (this.movies.length === 0) {
       this.#renderNoMovies();
       return;
     }
