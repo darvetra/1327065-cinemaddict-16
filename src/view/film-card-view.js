@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {convertYearDate} from '../utils/date';
+import {convertYearDate, formatRunTime} from '../utils/date';
 
 const createFilmCardTemplate = (movie = {}) => {
   const {filmInfo, comments, userDetails} = movie;
@@ -7,6 +7,7 @@ const createFilmCardTemplate = (movie = {}) => {
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
   const releaseDate = convertYearDate(release.date);
+  const humanizedRuntime = formatRunTime(runtime);
   const mainGenre = genre.slice(0, 1);
   const commentsLength = comments.length;
 
@@ -28,7 +29,7 @@ const createFilmCardTemplate = (movie = {}) => {
       <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate}</span>
-        <span class="film-card__duration">${runtime}m</span>
+        <span class="film-card__duration">${humanizedRuntime}</span>
         <span class="film-card__genre">${mainGenre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="${title}" class="film-card__poster">
