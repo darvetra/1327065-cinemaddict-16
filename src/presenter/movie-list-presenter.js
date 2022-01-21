@@ -1,7 +1,7 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {sortByRating, sortByDate, sortByCommentsCount} from '../utils/sort';
 
-import {SortType} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 import MoviePresenter from './movie-presenter';
 
@@ -80,15 +80,30 @@ export default class MovieListPresenter {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+
+    switch (actionType) {
+      case UserAction.UPDATE_MOVIE:
+        this.#moviesModel.updateMovie(updateType, update);
+        break;
+    }
   }
 
   #handleModelEvent = (updateType, data) => {
     // eslint-disable-next-line no-console
     console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить карточку
+        this.#moviePresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
   #handleSortTypeChange = (sortType) => {
