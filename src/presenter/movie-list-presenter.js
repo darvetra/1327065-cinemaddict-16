@@ -39,6 +39,8 @@ export default class MovieListPresenter {
   constructor(mainContainer, moviesModel) {
     this.#mainContainer = mainContainer;
     this.#moviesModel = moviesModel;
+
+    this.#moviesModel.addObserver(this.#handleModelEvent);
   }
 
   // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
@@ -66,9 +68,27 @@ export default class MovieListPresenter {
     this.#moviePresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #handleMovieCardChange = (updatedMovie) => {
-    // Здесь будем вызывать обновление модели
-    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
+  // #handleMovieCardChange = (updatedMovie) => {
+  //   // Здесь будем вызывать обновление модели
+  //   this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
+  // }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    // eslint-disable-next-line no-console
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  #handleModelEvent = (updateType, data) => {
+    // eslint-disable-next-line no-console
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -92,7 +112,7 @@ export default class MovieListPresenter {
   }
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
-    const moviePresenter = new MoviePresenter(container, this.#handleMovieCardChange, this.#handleModeChange);
+    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange);
     moviePresenter.init(movie);
     this.#moviePresenter.set(movie.id, moviePresenter);
   }

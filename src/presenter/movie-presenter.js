@@ -1,4 +1,5 @@
 import {customAppendChild, customRemoveChild, remove, render, replace} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const';
 
 import FilmCardView from '../view/film-card-view';
 import FilmDetailsView from '../view/film-details-view';
@@ -104,15 +105,27 @@ export default class MoviePresenter {
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}}
+    );
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}}
+    );
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
+    );
   }
 
   #handlePopupClose = () => {
