@@ -184,24 +184,6 @@ export default class MovieListPresenter {
     this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#mostCommentedMovieCards, this.#moviesListMostCommentedComponent);
   }
 
-  #clearMovieList = () => {
-    this.#moviePresenter.forEach((presenter) => presenter.destroy());
-    this.#moviePresenter.clear();
-    this.#renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
-    remove(this.#showMoreButtonComponent);
-  }
-
-  #renderMovieList = () => {
-    const movieCardsCount = this.movies.length;
-    const movies = this.movies.slice(0, Math.min(movieCardsCount, MOVIE_COUNT_PER_STEP));
-
-    this.#renderMovieCards(movies);
-
-    if (movieCardsCount > MOVIE_COUNT_PER_STEP) {
-      this.#renderShowMoreButton();
-    }
-  }
-
   #clearMainContainer = ({resetRenderedMovieCardCount = false, resetSortType = false} = {}) => {
     const movieCount = this.movies.length;
 
