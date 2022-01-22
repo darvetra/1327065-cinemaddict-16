@@ -23,9 +23,9 @@ export default class MovieListPresenter {
   #moviesListComponent = new FilmsListView();
   #moviesListTopRatedComponent = new FilmsListView();
   #moviesListMostCommentedComponent = new FilmsListView();
-  #sortComponent = new SortView();
   #noMoviesComponent = new NoFilmsView();
-  #showMoreButtonComponent = new ShowMoreButtonView();
+  #sortComponent = null;
+  #showMoreButtonComponent = null;
 
   #renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
   #moviePresenter = new Map();
@@ -68,11 +68,6 @@ export default class MovieListPresenter {
     this.#moviePresenter.forEach((presenter) => presenter.resetView());
   }
 
-  // #handleMovieCardChange = (updatedMovie) => {
-  //   // Здесь будем вызывать обновление модели
-  //   this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
-  // }
-
   #handleViewAction = (actionType, updateType, update) => {
     // eslint-disable-next-line no-console
     console.log(actionType, updateType, update);
@@ -99,9 +94,13 @@ export default class MovieListPresenter {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
+        this.#clearMainContainer();
+        this.#renderMainContainer();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this.#clearMainContainer({resetRenderedMovieCardCount: true, resetSortType: true});
+        this.#renderMainContainer();
         break;
     }
   }
@@ -115,15 +114,17 @@ export default class MovieListPresenter {
     this.#currentSortType = sortType;
 
     // Очищаем список
-    this.#clearMovieList();
+    this.#clearMainContainer({resetRenderedMovieCardCount: true});
 
     // Рендерим список заново
-    this.#renderMovieList();
+    this.#renderMainContainer();
   }
 
   #renderSort = () => {
-    render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
+    this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+
+    render(this.#moviesSectionComponent, this.#sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
@@ -156,9 +157,11 @@ export default class MovieListPresenter {
   #renderShowMoreButton = () => {
     // Дублируется поиск filmsListElement через querySelector. Создать отдельную вьюху?
     const filmsListElement = this.#mainContainer.querySelector('.films-list');
-    render(filmsListElement, this.#showMoreButtonComponent);
+    this.#showMoreButtonComponent = new ShowMoreButtonView();
 
     this.#showMoreButtonComponent.setClickHandler(this.#handleShowMoreButtonClick);
+
+    render(filmsListElement, this.#showMoreButtonComponent);
   }
 
   #renderExtraMovies = () => {
@@ -199,17 +202,52 @@ export default class MovieListPresenter {
     }
   }
 
+  #clearMainContainer = ({resetRenderedMovieCardCount = false, resetSortType = false} = {}) => {
+    const movieCount = this.movies.length;
+
+    this.#moviePresenter.forEach((presenter) => presenter.destroy());
+    this.#moviePresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noMoviesComponent);
+    remove(this.#showMoreButtonComponent);
+
+    if (resetRenderedMovieCardCount) {
+      this.#renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
+    } else {
+      // На случай, если перерисовка доски вызвана
+      // уменьшением количества задач (например, удаление или перенос в архив)
+      // нужно скорректировать число показанных задач
+      this.#renderedMovieCardCount = Math.min(movieCount, this.#renderedMovieCardCount);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
+  }
+
   #renderMainContainer = () => {
     // sort
     this.#renderSort();
 
     // content
-    if (this.movies.length === 0) {
+    const movies = this.movies;
+    const movieCount = movies.length;
+
+    if (movieCount === 0) {
       this.#renderNoMovies();
       return;
     }
 
-    this.#renderMovieList();
+    // Теперь, когда renderMainContainer рендерит доску не только на старте,
+    // но и по ходу работы приложения, нужно заменить
+    // константу MOVIE_COUNT_PER_STEP на свойство renderedMovieCardCount,
+    // чтобы в случае перерисовки сохранить N-показанных карточек
+    this.#renderMovieCards(movies.slice(0, Math.min(movieCount, this.#renderedMovieCardCount)));
+
+    if (movieCount > this.#renderedMovieCardCount) {
+      this.#renderShowMoreButton();
+    }
 
     this.#renderExtraMovies();
   }
