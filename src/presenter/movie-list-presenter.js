@@ -62,19 +62,21 @@ export default class MovieListPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     // eslint-disable-next-line no-console
     console.log(actionType, updateType, update);
+
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+    this.#moviesModel.updateMovie(updateType, update);
 
-    switch (actionType) {
-      case UserAction.UPDATE_MOVIE:
-        this.#moviesModel.updateMovie(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this.#moviesModel.deleteComment(update);
-        break;
-    }
+    // switch (actionType) {
+    //   case UserAction.UPDATE_MOVIE:
+    //     this.#moviesModel.updateMovie(updateType, update);
+    //     break;
+    //   case UserAction.DELETE_COMMENT:
+    //     this.#moviesModel.deleteComment(update);
+    //     break;
+    // }
   }
 
   #handleModelEvent = (updateType, data) => {
