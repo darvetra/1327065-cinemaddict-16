@@ -1,5 +1,5 @@
 import {remove, render, RenderPosition} from '../utils/render';
-import {sortByRating, sortByDate, sortByCommentsCount} from '../utils/sort';
+import {sortByRating, sortByDate} from '../utils/sort';
 
 import {SortType, UpdateType, UserAction} from '../const.js';
 
@@ -10,10 +10,8 @@ import NoFilmsView from '../view/no-films';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
-import FilmsListExtraView from '../view/films-list-extra-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
-const MOVIE_COUNT_EXTRA = 2;
 
 export default class MovieListPresenter {
   #mainContainer = null;
@@ -21,8 +19,6 @@ export default class MovieListPresenter {
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
-  #moviesListTopRatedComponent = new FilmsListView();
-  #moviesListMostCommentedComponent = new FilmsListView();
   #noMoviesComponent = new NoFilmsView();
   #sortComponent = null;
   #showMoreButtonComponent = null;
@@ -30,11 +26,6 @@ export default class MovieListPresenter {
   #renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
-
-  // переделать блок рекомендованных фильмов
-  // соответственно - избавиться от массивов ниже
-  #topRatedMovieCards = [];
-  #mostCommentedMovieCards = [];
 
   constructor(mainContainer, moviesModel) {
     this.#mainContainer = mainContainer;
@@ -167,26 +158,6 @@ export default class MovieListPresenter {
     render(filmsListElement, this.#showMoreButtonComponent);
   }
 
-  #renderExtraMovies = () => {
-    this.#topRatedMovieCards = [...this.movies.sort(sortByRating)];
-    this.#mostCommentedMovieCards = [...this.movies.sort(sortByCommentsCount)];
-
-    const filmsElement = this.#mainContainer.querySelector('.films');
-
-    render(filmsElement, new FilmsListExtraView('Top rated'));
-    render(filmsElement, new FilmsListExtraView('Most commented'));
-
-    const [topRatedElements, mostCommentedElements] = filmsElement.getElementsByClassName('films-list--extra');
-
-    // top rated movies
-    render(topRatedElements, this.#moviesListTopRatedComponent);
-    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#topRatedMovieCards, this.#moviesListTopRatedComponent);
-
-    // most commented movies
-    render(mostCommentedElements, this.#moviesListMostCommentedComponent);
-    this.#renderMovieCards(0, MOVIE_COUNT_EXTRA, this.#mostCommentedMovieCards, this.#moviesListMostCommentedComponent);
-  }
-
   #clearMainContainer = ({resetRenderedMovieCardCount = false, resetSortType = false} = {}) => {
     const movieCount = this.movies.length;
 
@@ -233,7 +204,6 @@ export default class MovieListPresenter {
     if (movieCount > this.#renderedMovieCardCount) {
       this.#renderShowMoreButton();
     }
-
-    this.#renderExtraMovies();
   }
+
 }

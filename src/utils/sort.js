@@ -41,24 +41,3 @@ export const sortByDate = (movieA, movieB) => {
   return 0;
 };
 
-/**
- * Функция для метода sort
- * Сортировка по дате (году) релиза
- * @param movieA
- * @param movieB
- * @returns {number}
- */
-export const sortByCommentsCount = (movieA, movieB) => {
-  const commentsCountMovieA = movieA.comments.length;
-  const commentsCountMovieB = movieB.comments.length;
-
-  if (commentsCountMovieA > commentsCountMovieB) {
-    return -1;
-  }
-
-  if (commentsCountMovieA < commentsCountMovieB) {
-    return 1;
-  }
-
-  return 0;
-};
