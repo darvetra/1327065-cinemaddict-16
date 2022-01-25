@@ -146,7 +146,7 @@ const generateComment = () => {
   ];
 
   return {
-    id: getRandomInteger(0, 42),
+    id: nanoid(),
     author: authors[getRandomIntInclusive(0, authors.length - 1)],
     comment: comments[getRandomIntInclusive(0, comments.length - 1)],
     date: generateDate(MAXIMUM_GAP_OF_TIME),

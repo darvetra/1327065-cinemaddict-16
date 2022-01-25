@@ -26,4 +26,21 @@ export default class MoviesModel extends AbstractObservable {
 
     this._notify(updateType, update);
   }
+
+  deleteComment = (commentId) => {
+    const currentMovie = this.#movies.find((movie) => movie.comments.includes(commentId));
+    const commentIndex = currentMovie.comments.findIndex((comment) => comment === commentId);
+
+    if (commentIndex === -1) {
+      throw new Error('Can\'t delete unexisting comment');
+    }
+
+    currentMovie.comments = [
+      ...currentMovie.comments.slice(0, commentIndex),
+      ...currentMovie.comments.slice(commentIndex + 1),
+    ];
+
+    this._notify();
+  }
+
 }

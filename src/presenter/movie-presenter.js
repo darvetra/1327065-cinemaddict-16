@@ -41,6 +41,7 @@ export default class MoviePresenter {
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
     this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieListContainer, this.#movieCardComponent);
@@ -82,6 +83,12 @@ export default class MoviePresenter {
     bodyElement.classList.remove('hide-overflow');
     this.#mode = Mode.DEFAULT;
   };
+
+  #deleteComment = (movie, id) => {
+    const comments = movie.comments.filter((comment) => comment.id !== id);
+    delete movie.comments;
+    movie.comments = comments;
+  }
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -134,8 +141,22 @@ export default class MoviePresenter {
     document.removeEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   }
 
-  #handleFormSubmit = (movie) => {
-    this.#changeData(movie);
+  #handleFormSubmit = (update) => {
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      update,
+    );
+  }
+
+  #handleDeleteComment = (id) => {
+    this.#deleteComment(this.#movie, id);
+
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this.#movie,
+    );
   }
 
   destroy = () => {

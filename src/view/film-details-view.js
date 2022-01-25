@@ -31,7 +31,7 @@ const BLANK_MOVIE = {
 };
 
 const createCommentTemplate = (commentItem) => {
-  const {author, comment, date, emotion} = commentItem;
+  const {id, author, comment, date, emotion} = commentItem;
   const time = convertHumanTime(date);
 
   return `<li class="film-details__comment">
@@ -43,7 +43,7 @@ const createCommentTemplate = (commentItem) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-id-comment="${id}">Delete</button>
       </p>
     </div>
   </li>`;
@@ -229,6 +229,7 @@ export default class FilmDetailsView extends SmartView {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
   }
 
   setPopupCloseHandler = (callback) => {
@@ -273,10 +274,26 @@ export default class FilmDetailsView extends SmartView {
     this._callback.formSubmit(FilmDetailsView.parseDataToMovie(this._data));
   }
 
+  setDeleteCommentClickHandler = (callback) => {
+    this._callback.deleteCommentClick = callback;
+    this.element.querySelector('.film-details__comments-list').addEventListener('click', this.#deleteClickHandler);
+  }
+
   #scrollPositionHandler = () => {
     this.updateData({
       scrollPosition: this.element.scrollTop,
     }, true);
+  }
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    // this._callback.deleteClick(FilmDetailsView.parseDataToMovie(this._data));
+
+    if (evt.target.tagName !== 'BUTTON') {
+      return;
+    }
+
+    this._callback.deleteCommentClick(evt.target.dataset.idComment);
   }
 
   static parseMovieToData = (movie) => ({...movie,

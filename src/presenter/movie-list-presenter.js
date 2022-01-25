@@ -80,6 +80,9 @@ export default class MovieListPresenter {
       case UserAction.UPDATE_MOVIE:
         this.#moviesModel.updateMovie(updateType, update);
         break;
+      case UserAction.DELETE_COMMENT:
+        this.#moviesModel.deleteComment(update);
+        break;
     }
   }
 
