@@ -54,8 +54,9 @@ export default class MoviePresenter {
       replace(this.#movieCardComponent, prevMovieCardComponent);
     }
 
-    if (this.#movieListContainer.element.contains(prevMovieDetailsComponent.element)) {
+    if (this.#mode === Mode.POPUP) {
       replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+      replace(this.#movieCardComponent, prevMovieCardComponent);
     }
 
     remove(prevMovieCardComponent);

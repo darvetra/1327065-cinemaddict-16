@@ -1,7 +1,7 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {sortByRating, sortByDate} from '../utils/sort';
 
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType} from '../const.js';
 
 import MoviePresenter from './movie-presenter';
 
@@ -68,15 +68,6 @@ export default class MovieListPresenter {
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
     this.#moviesModel.updateMovie(updateType, update);
-
-    // switch (actionType) {
-    //   case UserAction.UPDATE_MOVIE:
-    //     this.#moviesModel.updateMovie(updateType, update);
-    //     break;
-    //   case UserAction.DELETE_COMMENT:
-    //     this.#moviesModel.deleteComment(update);
-    //     break;
-    // }
   }
 
   #handleModelEvent = (updateType, data) => {
