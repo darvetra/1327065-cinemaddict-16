@@ -1,6 +1,7 @@
 import {render, RenderPosition} from './utils/render.js';
 
 import MoviesModel from './model/movies-model';
+import FilterModel from './model/filter-model';
 
 import HeaderProfileView from './view/header-profile-view';
 import MainNavigationView from './view/main-navigation-view';
@@ -18,6 +19,8 @@ const filters = generateFilter(movies);
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
+
+const filterModel = new FilterModel();
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
