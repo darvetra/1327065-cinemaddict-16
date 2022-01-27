@@ -2,6 +2,9 @@ import SmartView from './smart-view';
 import {convertHumanDate, convertHumanTime, formatRunTime} from '../utils/date';
 import {EMOJIS} from '../const';
 
+import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+
 const BLANK_MOVIE = {
   id: 0,
   comments: [],
@@ -225,6 +228,22 @@ export default class FilmDetailsView extends SmartView {
     );
   }
 
+  addComment = () => {
+    if (this._data.commentEmotion === '' || this._data.commentEmotion === false || this._data.textComment === '') {
+      return;
+    }
+
+    const newComment = {
+      id: nanoid(),
+      emotion: this._data.commentEmotion,
+      comment: this._data.textComment,
+      date: dayjs(),
+      author: 'Author',
+    };
+    this._data.comments.push(newComment);
+    this.#update(this._data);
+  }
+
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
@@ -260,7 +279,7 @@ export default class FilmDetailsView extends SmartView {
   #descriptionInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      description: evt.target.value,
+      textComment: evt.target.value,
     }, true);
   }
 
@@ -296,16 +315,28 @@ export default class FilmDetailsView extends SmartView {
     this._callback.deleteCommentClick(evt.target.dataset.idComment);
   }
 
+  #update = (data) => {
+    this.updateData(
+      FilmDetailsView.parseDataToMovie(data),
+    );
+  }
+
   static parseMovieToData = (movie) => ({...movie,
     commentEmotion: movie.commentEmotion !== undefined,
     scrollPosition: 0,
+    textComment: '',
   });
 
   static parseDataToMovie = (data) => {
     const movie = {...data};
 
+    if (movie.textComment) {
+      movie.textComment = '';
+    }
+
     delete movie.commentEmotion;
     delete movie.scrollPosition;
+    delete movie.textComment;
 
     return movie;
   }

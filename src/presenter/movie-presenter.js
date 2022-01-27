@@ -103,6 +103,7 @@ export default class MoviePresenter {
   #ctrlEnterKeyDownHandler = (evt) => {
     if (evt.ctrlKey && evt.keyCode === 13) {
       evt.preventDefault();
+      this.#handleFormSubmit();
     }
   };
 
@@ -142,11 +143,14 @@ export default class MoviePresenter {
     document.removeEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   }
 
-  #handleFormSubmit = (update) => {
+
+  #handleFormSubmit = () => {
+    this.#movieDetailsComponent.addComment();
+
     this.#changeData(
-      UserAction.UPDATE_MOVIE,
+      UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      update,
+      this.#movie,
     );
   }
 
