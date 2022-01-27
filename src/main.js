@@ -10,12 +10,17 @@ import FooterStatisticsView from './view/footer-statistics-view';
 import MovieListPresenter from './presenter/movie-list-presenter';
 
 import {generateMovie} from './mock/movie';
-import {generateFilter} from './mock/filter';
 
 const MOVIE_COUNT = 20;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
-const filters = generateFilter(movies);
+const filters = [
+  {
+    type: 'all',
+    name: 'ALL',
+    count: 0,
+  },
+];
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
@@ -33,7 +38,7 @@ const movieListPresenter = new MovieListPresenter(siteMainElement, moviesModel);
 render(siteHeaderElement, new HeaderProfileView());
 
 // menu
-render(siteMainElement, new MainNavigationView(filters), RenderPosition.AFTERBEGIN);
+render(siteMainElement, new MainNavigationView(filters, 'all'), RenderPosition.AFTERBEGIN);
 
 // content
 movieListPresenter.init();
