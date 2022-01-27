@@ -14,7 +14,7 @@ import ShowMoreButtonView from '../view/show-more-button-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
 
-export default class MovieListPresenter {
+export default class MainPresenter {
   #mainContainer = null;
   #moviesModel = null;
   #filterModel = null;

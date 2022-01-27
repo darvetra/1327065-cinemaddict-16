@@ -6,7 +6,7 @@ import FilterModel from './model/filter-model';
 import HeaderProfileView from './view/header-profile-view';
 import FooterStatisticsView from './view/footer-statistics-view';
 
-import MovieListPresenter from './presenter/movie-list-presenter';
+import MainPresenter from './presenter/main-presenter';
 import FilterPresenter from './presenter/filter-presenter';
 
 import {generateMovie} from './mock/movie';
@@ -27,7 +27,7 @@ const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statisti
 
 render(siteHeaderElement, new HeaderProfileView());
 
-const movieListPresenter = new MovieListPresenter(siteMainElement, moviesModel, filterModel);
+const movieListPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
 filterPresenter.init();
