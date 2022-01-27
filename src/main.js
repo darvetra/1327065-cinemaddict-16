@@ -4,23 +4,16 @@ import MoviesModel from './model/movies-model';
 import FilterModel from './model/filter-model';
 
 import HeaderProfileView from './view/header-profile-view';
-import MainNavigationView from './view/main-navigation-view';
 import FooterStatisticsView from './view/footer-statistics-view';
 
 import MovieListPresenter from './presenter/movie-list-presenter';
+import FilterPresenter from './presenter/filter-presenter';
 
 import {generateMovie} from './mock/movie';
 
 const MOVIE_COUNT = 20;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
-const filters = [
-  {
-    type: 'all',
-    name: 'ALL',
-    count: 0,
-  },
-];
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
@@ -32,16 +25,12 @@ const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
-const movieListPresenter = new MovieListPresenter(siteMainElement, moviesModel);
-
-// header
 render(siteHeaderElement, new HeaderProfileView());
 
-// menu
-render(siteMainElement, new MainNavigationView(filters, 'all'), RenderPosition.AFTERBEGIN);
+const movieListPresenter = new MovieListPresenter(siteMainElement, moviesModel);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
-// content
+filterPresenter.init();
 movieListPresenter.init();
 
-// footer
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
