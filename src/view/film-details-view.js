@@ -4,6 +4,7 @@ import {EMOJIS} from '../const';
 
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
+import he from 'he';
 
 const BLANK_MOVIE = {
   id: 0,
@@ -42,7 +43,7 @@ const createCommentTemplate = (commentItem) => {
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
     <div>
-      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-text">${he.encode(comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
@@ -73,7 +74,7 @@ const createEmojisListTemplate = (currentEmoji) => (
 const createEmojiLabelTemplate = (currentEmoji) => `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">`;
 
 const createFilmDetailsTemplate = (data = {}) => {
-  const {filmInfo, comments, userDetails, commentEmotion} = data;
+  const {filmInfo, comments, userDetails, commentEmotion, textComment} = data;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
@@ -197,7 +198,7 @@ const createFilmDetailsTemplate = (data = {}) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
