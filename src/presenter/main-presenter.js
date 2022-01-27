@@ -2,12 +2,12 @@ import {remove, render, RenderPosition} from '../utils/render';
 import {sortByRating, sortByDate} from '../utils/sort';
 import {filter} from '../utils/filter';
 
-import {SortType, UpdateType} from '../const.js';
+import {SortType, UpdateType, FilterType} from '../const.js';
 
 import MoviePresenter from './movie-presenter';
 
 import SortView from '../view/sort-view';
-import NoFilmsView from '../view/no-films';
+import NoFilmsView from '../view/no-films-view';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
@@ -21,13 +21,14 @@ export default class MainPresenter {
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
-  #noMoviesComponent = new NoFilmsView();
+  #noMoviesComponent = null;
   #sortComponent = null;
   #showMoreButtonComponent = null;
 
   #renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.ALL;
 
   constructor(mainContainer, moviesModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -40,9 +41,9 @@ export default class MainPresenter {
 
   // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
   get movies() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const movies = this.#moviesModel.movies;
-    const filteredMovies = filter[filterType](movies);
+    const filteredMovies = filter[this.#filterType](movies);
 
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -133,6 +134,7 @@ export default class MainPresenter {
   }
 
   #renderNoMovies = () => {
+    this.#noMoviesComponent = new NoFilmsView(this.#filterType);
     render(this.#moviesSectionComponent, this.#noMoviesComponent);
   }
 
@@ -166,8 +168,11 @@ export default class MainPresenter {
     this.#moviePresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noMoviesComponent);
     remove(this.#showMoreButtonComponent);
+
+    if (this.#noMoviesComponent) {
+      remove(this.#noMoviesComponent);
+    }
 
     if (resetRenderedMovieCardCount) {
       this.#renderedMovieCardCount = MOVIE_COUNT_PER_STEP;
