@@ -1,5 +1,6 @@
 import {remove, render, RenderPosition} from '../utils/render';
 import {sortByRating, sortByDate} from '../utils/sort';
+import {filter} from '../utils/filter';
 
 import {SortType, UpdateType} from '../const.js';
 
@@ -16,6 +17,7 @@ const MOVIE_COUNT_PER_STEP = 5;
 export default class MovieListPresenter {
   #mainContainer = null;
   #moviesModel = null;
+  #filterModel = null;
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
@@ -27,23 +29,29 @@ export default class MovieListPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
 
-  constructor(mainContainer, moviesModel) {
+  constructor(mainContainer, moviesModel, filterModel) {
     this.#mainContainer = mainContainer;
     this.#moviesModel = moviesModel;
+    this.#filterModel = filterModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
   get movies() {
+    const filterType = this.#filterModel.filter;
+    const movies = this.#moviesModel.movies;
+    const filteredMovies = filter[filterType](movies);
+
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return [...this.#moviesModel.movies].sort(sortByDate);
+        return filteredMovies.sort(sortByDate);
       case SortType.RATING:
-        return [...this.#moviesModel.movies].sort(sortByRating);
+        return filteredMovies.sort(sortByRating);
     }
 
-    return this.#moviesModel.movies;
+    return filteredMovies;
   }
 
   init = () => {
