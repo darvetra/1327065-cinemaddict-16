@@ -2,6 +2,10 @@ import SmartView from './smart-view';
 import {convertHumanDate, convertHumanTime, formatRunTime} from '../utils/date';
 import {EMOJIS} from '../const';
 
+import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+import he from 'he';
+
 const BLANK_MOVIE = {
   id: 0,
   comments: [],
@@ -31,7 +35,7 @@ const BLANK_MOVIE = {
 };
 
 const createCommentTemplate = (commentItem) => {
-  const {author, comment, date, emotion} = commentItem;
+  const {id, author, comment, date, emotion} = commentItem;
   const time = convertHumanTime(date);
 
   return `<li class="film-details__comment">
@@ -39,11 +43,11 @@ const createCommentTemplate = (commentItem) => {
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
     <div>
-      <p class="film-details__comment-text">${comment}</p>
+      <p class="film-details__comment-text">${he.encode(comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-id-comment="${id}">Delete</button>
       </p>
     </div>
   </li>`;
@@ -70,7 +74,7 @@ const createEmojisListTemplate = (currentEmoji) => (
 const createEmojiLabelTemplate = (currentEmoji) => `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">`;
 
 const createFilmDetailsTemplate = (data = {}) => {
-  const {filmInfo, comments, userDetails, commentEmotion} = data;
+  const {filmInfo, comments, userDetails, commentEmotion, textComment} = data;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
@@ -194,7 +198,7 @@ const createFilmDetailsTemplate = (data = {}) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -225,10 +229,27 @@ export default class FilmDetailsView extends SmartView {
     );
   }
 
+  addComment = () => {
+    if (this._data.commentEmotion === '' || this._data.commentEmotion === false || this._data.textComment === '') {
+      return;
+    }
+
+    const newComment = {
+      id: nanoid(),
+      emotion: this._data.commentEmotion,
+      comment: this._data.textComment,
+      date: dayjs(),
+      author: 'Author',
+    };
+    this._data.comments.push(newComment);
+    this.#update(this._data);
+  }
+
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setPopupCloseHandler(this._callback.popupClose);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
   }
 
   setPopupCloseHandler = (callback) => {
@@ -259,7 +280,7 @@ export default class FilmDetailsView extends SmartView {
   #descriptionInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      description: evt.target.value,
+      textComment: evt.target.value,
     }, true);
   }
 
@@ -273,22 +294,50 @@ export default class FilmDetailsView extends SmartView {
     this._callback.formSubmit(FilmDetailsView.parseDataToMovie(this._data));
   }
 
+  setDeleteCommentClickHandler = (callback) => {
+    this._callback.deleteCommentClick = callback;
+    this.element.querySelector('.film-details__comments-list').addEventListener('click', this.#deleteClickHandler);
+  }
+
   #scrollPositionHandler = () => {
     this.updateData({
       scrollPosition: this.element.scrollTop,
     }, true);
   }
 
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    // this._callback.deleteClick(FilmDetailsView.parseDataToMovie(this._data));
+
+    if (evt.target.tagName !== 'BUTTON') {
+      return;
+    }
+
+    this._callback.deleteCommentClick(evt.target.dataset.idComment);
+  }
+
+  #update = (data) => {
+    this.updateData(
+      FilmDetailsView.parseDataToMovie(data),
+    );
+  }
+
   static parseMovieToData = (movie) => ({...movie,
     commentEmotion: movie.commentEmotion !== undefined,
     scrollPosition: 0,
+    textComment: '',
   });
 
   static parseDataToMovie = (data) => {
     const movie = {...data};
 
+    if (movie.textComment) {
+      movie.textComment = '';
+    }
+
     delete movie.commentEmotion;
     delete movie.scrollPosition;
+    delete movie.textComment;
 
     return movie;
   }

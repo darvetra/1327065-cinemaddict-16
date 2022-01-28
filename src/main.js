@@ -1,34 +1,36 @@
 import {render, RenderPosition} from './utils/render.js';
 
-import MovieListPresenter from './presenter/movie-list-presenter';
+import MoviesModel from './model/movies-model';
+import FilterModel from './model/filter-model';
 
 import HeaderProfileView from './view/header-profile-view';
-import MainNavigationView from './view/main-navigation-view';
 import FooterStatisticsView from './view/footer-statistics-view';
 
+import MainPresenter from './presenter/main-presenter';
+import FilterPresenter from './presenter/filter-presenter';
+
 import {generateMovie} from './mock/movie';
-import {generateFilter} from './mock/filter';
 
 const MOVIE_COUNT = 20;
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
-const filters = generateFilter(movies);
+
+const moviesModel = new MoviesModel();
+moviesModel.movies = movies;
+
+const filterModel = new FilterModel();
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
-const movieListPresenter = new MovieListPresenter(siteMainElement);
-
-// header
 render(siteHeaderElement, new HeaderProfileView());
 
-// menu
-render(siteMainElement, new MainNavigationView(filters), RenderPosition.AFTERBEGIN);
+const movieListPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
-// content
-movieListPresenter.init(movies);
+filterPresenter.init();
+movieListPresenter.init();
 
-// footer
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);

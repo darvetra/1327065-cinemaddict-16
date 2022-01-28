@@ -1,20 +1,23 @@
 import AbstractView from './abstract-view.js';
 
-const createFilterItemTemplate = (filter, isActive) => {
-  const {name, count} = filter;
-
-  const activeClassName = isActive
-    ? 'main-navigation__item--active'
-    : '';
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
 
   return (
-    `<a href="#${name}" class="main-navigation__item ${activeClassName}" style="text-transform: capitalize">${name} <span class="main-navigation__item-count">${count}</span></a>`
+    `<a
+      href="#${type}"
+      class="main-navigation__item ${currentFilterType === type ? 'main-navigation__item--active' : ''}"
+      data-filter-type="${type}"
+    >
+      ${name}
+      <span class="main-navigation__item-count">${count}</span>
+    </a>`
   );
 };
 
-const createMainNavigationTemplate = (filterItems) => {
+const createMainNavigationTemplate = (filterItems, currentFilterType) => {
   const filterItemsTemplate = filterItems
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
 
   return `<nav class="main-navigation">
@@ -27,13 +30,25 @@ const createMainNavigationTemplate = (filterItems) => {
 
 export default class MainNavigationView extends AbstractView {
   #filters  = null;
+  #currentFilter = null;
 
-  constructor(filters ) {
+  constructor(filters, currentFilterType) {
     super();
     this.#filters  = filters ;
+    this.#currentFilter = currentFilterType;
   }
 
   get template() {
-    return createMainNavigationTemplate(this.#filters);
+    return createMainNavigationTemplate(this.#filters, this.#currentFilter);
+  }
+
+  setFilterTypeChangeHandler = (callback) => {
+    this._callback.filterTypeChange = callback;
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+  }
+
+  #filterTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
 }

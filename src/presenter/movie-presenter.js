@@ -1,4 +1,5 @@
 import {customAppendChild, customRemoveChild, remove, render, replace} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const';
 
 import FilmCardView from '../view/film-card-view';
 import FilmDetailsView from '../view/film-details-view';
@@ -40,6 +41,7 @@ export default class MoviePresenter {
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
     this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieListContainer, this.#movieCardComponent);
@@ -52,8 +54,9 @@ export default class MoviePresenter {
       replace(this.#movieCardComponent, prevMovieCardComponent);
     }
 
-    if (this.#movieListContainer.element.contains(prevMovieDetailsComponent.element)) {
+    if (this.#mode === Mode.POPUP) {
       replace(this.#movieDetailsComponent, prevMovieDetailsComponent);
+      replace(this.#movieCardComponent, prevMovieCardComponent);
     }
 
     remove(prevMovieCardComponent);
@@ -82,6 +85,12 @@ export default class MoviePresenter {
     this.#mode = Mode.DEFAULT;
   };
 
+  #deleteComment = (movie, id) => {
+    const comments = movie.comments.filter((comment) => comment.id !== id);
+    delete movie.comments;
+    movie.comments = comments;
+  }
+
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -94,6 +103,7 @@ export default class MoviePresenter {
   #ctrlEnterKeyDownHandler = (evt) => {
     if (evt.ctrlKey && evt.keyCode === 13) {
       evt.preventDefault();
+      this.#handleFormSubmit();
     }
   };
 
@@ -104,15 +114,27 @@ export default class MoviePresenter {
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}}
+    );
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}}
+    );
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}});
+    this.#changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
+    );
   }
 
   #handlePopupClose = () => {
@@ -121,8 +143,25 @@ export default class MoviePresenter {
     document.removeEventListener('keydown', this.#ctrlEnterKeyDownHandler);
   }
 
-  #handleFormSubmit = (movie) => {
-    this.#changeData(movie);
+
+  #handleFormSubmit = () => {
+    this.#movieDetailsComponent.addComment();
+
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      this.#movie,
+    );
+  }
+
+  #handleDeleteComment = (id) => {
+    this.#deleteComment(this.#movie, id);
+
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this.#movie,
+    );
   }
 
   destroy = () => {
