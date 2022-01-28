@@ -69,9 +69,6 @@ export default class MainPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    // eslint-disable-next-line no-console
-    console.log(actionType, updateType, update);
-
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
@@ -80,8 +77,6 @@ export default class MainPresenter {
   }
 
   #handleModelEvent = (updateType, data) => {
-    // eslint-disable-next-line no-console
-    console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
@@ -95,7 +90,7 @@ export default class MainPresenter {
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
-        this.#clearMainContainer({resetRenderedMovieCardCount: true, resetSortType: true});
+        this.#clearMainContainer(true, true);
         this.#renderMainContainer();
         break;
     }
@@ -110,7 +105,7 @@ export default class MainPresenter {
     this.#currentSortType = sortType;
 
     // Очищаем список
-    this.#clearMainContainer({resetRenderedMovieCardCount: true});
+    this.#clearMainContainer(true);
 
     // Рендерим список заново
     this.#renderMainContainer();
@@ -161,7 +156,7 @@ export default class MainPresenter {
     render(filmsListElement, this.#showMoreButtonComponent);
   }
 
-  #clearMainContainer = ({resetRenderedMovieCardCount = false, resetSortType = false} = {}) => {
+  #clearMainContainer = (resetRenderedMovieCardCount = false, resetSortType = false) => {
     const movieCount = this.movies.length;
 
     this.#moviePresenter.forEach((presenter) => presenter.destroy());
