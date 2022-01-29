@@ -7,9 +7,11 @@ import FilterModel from './model/filter-model';
 import HeaderProfileView from './view/header-profile-view';
 import MenuView from './view/menu-view';
 import FooterStatisticsView from './view/footer-statistics-view';
+import StatsView from './view/stats-view';
 
 import MainPresenter from './presenter/main-presenter';
-import FilterPresenter from './presenter/filter-presenter';
+// на время отладки
+// import FilterPresenter from './presenter/filter-presenter';
 
 import {generateMovie} from './mock/movie';
 
@@ -32,7 +34,8 @@ const menuComponent = new MenuView();
 render(siteMainElement, menuComponent);
 
 const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
-const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
+// на время отладки
+// const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
 
 const clearPage = () => {
   mainPresenter.destroy();
@@ -54,7 +57,10 @@ const handleSiteMenuClick = (menuItem) => {
 
 menuComponent.setMenuClickHandler(handleSiteMenuClick);
 
-filterPresenter.init();
-mainPresenter.init();
+// Для удобства отладки скроем Фильтры и доску
+// filterPresenter.init();
+// mainPresenter.init();
+// и отобразим сразу статистику
+render(siteMainElement, new StatsView(moviesModel.movies), RenderPosition.BEFOREEND);
 
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
