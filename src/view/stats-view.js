@@ -1,4 +1,70 @@
 import SmartView from './smart-view';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+const BAR_HEIGHT = 50;
+
+const renderChart = (statisticCtx) => {
+  statisticCtx.height = BAR_HEIGHT * 5;
+
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: ['Sci-Fi', 'Animation', 'Fantasy', 'Comedy', 'TV Series'],
+      datasets: [{
+        data: [11, 8, 7, 4, 3],
+        backgroundColor: '#ffe800',
+        hoverBackgroundColor: '#ffe800',
+        anchor: 'start',
+        barThickness: 24,
+      }],
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20,
+          },
+          color: '#ffffff',
+          anchor: 'start',
+          align: 'start',
+          offset: 40,
+        },
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#ffffff',
+            padding: 100,
+            fontSize: 20,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
+  });
+};
 
 const createStatsTemplate = () => (`<section class="statistic">
   <p class="statistic__rank">
@@ -41,9 +107,7 @@ const createStatsTemplate = () => (`<section class="statistic">
     </li>
   </ul>
 
-  <!-- Пример диаграммы -->
-  <img src="images/cinemaddict-stats-markup.png" alt="Пример диаграммы">
-
+  <!-- Диаграмма -->
   <div class="statistic__chart-wrap">
     <canvas class="statistic__chart" width="1000"></canvas>
   </div>
@@ -52,6 +116,8 @@ const createStatsTemplate = () => (`<section class="statistic">
 );
 
 export default class StatsView extends SmartView {
+  #chart = null;
+
   constructor(movies) {
     super();
 
@@ -66,11 +132,23 @@ export default class StatsView extends SmartView {
     return createStatsTemplate(this._data);
   }
 
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#chart) {
+      this.#chart.destroy();
+      this.#chart = null;
+    }
+  }
+
   restoreHandlers = () => {
     this.#setCharts();
   }
 
   #setCharts = () => {
-    // Нужно отрисовать графики
+    const {movies} = this._data;
+    const statisticCtx = this.element.querySelector('.statistic__chart');
+
+    this.#chart = renderChart(statisticCtx, movies);
   }
 }
