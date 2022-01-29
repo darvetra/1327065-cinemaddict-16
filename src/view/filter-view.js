@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view.js';
+import {MenuItem} from '../const';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
@@ -8,6 +9,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
       href="#${type}"
       class="main-navigation__item ${currentFilterType === type ? 'main-navigation__item--active' : ''}"
       data-filter-type="${type}"
+      data-menu-item="${MenuItem.MOVIES}"
     >
       ${name}
       <span class="main-navigation__item-count">${count}</span>

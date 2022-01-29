@@ -34,18 +34,19 @@ render(siteMainElement, menuComponent);
 const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
 
+const clearPage = () => {
+  mainPresenter.destroy();
+};
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.MOVIES:
-      // Показать фильтры
-      // Показать доску
+      clearPage();
       mainPresenter.init();
       // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
-      // Скрыть фильтры
-      // Скрыть доску
-      mainPresenter.destroy();
+      clearPage();
       // Показать статистику
       break;
   }
