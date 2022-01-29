@@ -1,4 +1,4 @@
-import MainNavigationView from '../view/main-navigation-view';
+import FilterView from '../view/filter-view';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {filter} from '../utils/filter';
 import {FilterType, UpdateType} from '../const';
@@ -50,11 +50,11 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new MainNavigationView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREEND);
+      render(this.#filterContainer, this.#filterComponent, RenderPosition.AFTERBEGIN);
       return;
     }
 
