@@ -34,9 +34,6 @@ export default class MainPresenter {
     this.#mainContainer = mainContainer;
     this.#moviesModel = moviesModel;
     this.#filterModel = filterModel;
-
-    this.#moviesModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
@@ -61,7 +58,20 @@ export default class MainPresenter {
     const filmsListElement = this.#mainContainer.querySelector('.films-list');
     render(filmsListElement, this.#moviesListComponent);
 
+    this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+
     this.#renderMainContainer();
+  }
+
+  destroy = () => {
+    this.#clearMainContainer(true, true);
+
+    remove(this.#moviesListComponent);
+    remove(this.#moviesSectionComponent);
+
+    this.#moviesModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
   #handleModeChange = () => {

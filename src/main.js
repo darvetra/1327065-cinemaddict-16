@@ -37,15 +37,15 @@ const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesMo
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.MOVIES:
-      // Скрыть статистику
       // Показать фильтры
       // Показать доску
-      // Показать форму добавления новой задачи
-      // Убрать выделение с ADD NEW TASK после сохранения
+      mainPresenter.init();
+      // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
       // Скрыть фильтры
       // Скрыть доску
+      mainPresenter.destroy();
       // Показать статистику
       break;
   }
