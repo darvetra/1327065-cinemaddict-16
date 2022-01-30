@@ -1,4 +1,5 @@
 import AbstractObservable from '../utils/abstract-observable.js';
+import {UpdateType} from '../const.js';
 
 export default class MoviesModel extends AbstractObservable {
   #apiService = null;
@@ -14,8 +15,14 @@ export default class MoviesModel extends AbstractObservable {
   }
 
   init = async () => {
-    const movies = await this.#apiService.movies;
-    this.#movies = movies.map(this.#adaptToClient);
+    try {
+      const movies = await this.#apiService.movies;
+      this.#movies = movies.map(this.#adaptToClient);
+    } catch(err) {
+      this.#movies = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   updateMovie = (updateType, update) => {
