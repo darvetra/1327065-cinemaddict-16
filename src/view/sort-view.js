@@ -1,5 +1,6 @@
 import AbstractView from './abstract-view';
 import {SortType} from '../const';
+import {isClickOnLink} from '../utils/common';
 
 const createSortTemplate = (currentSortType) => (
   `<ul class="sort">
@@ -27,7 +28,7 @@ export default class SortView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+    if (isClickOnLink(evt)) {
       return;
     }
 

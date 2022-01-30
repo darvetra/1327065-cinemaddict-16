@@ -1,3 +1,5 @@
+export const MINUTES_IN_HOURS = 60;
+
 export const Emoji = {
   SMILE: 'smile',
   SLEEPING: 'sleeping',
@@ -30,4 +32,17 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+};
+
+export const MenuItem = {
+  MOVIES: 'MOVIES',
+  STATISTICS: 'STATISTICS',
+};
+
+export const StatisticType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
