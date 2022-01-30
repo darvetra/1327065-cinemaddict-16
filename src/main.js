@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils/render.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 import {MenuItem} from './const';
 
 import MoviesModel from './model/movies-model';
@@ -10,8 +10,7 @@ import FooterStatisticsView from './view/footer-statistics-view';
 import StatsView from './view/stats-view';
 
 import MainPresenter from './presenter/main-presenter';
-// на время отладки
-// import FilterPresenter from './presenter/filter-presenter';
+import FilterPresenter from './presenter/filter-presenter';
 
 import {generateMovie} from './mock/movie';
 
@@ -34,11 +33,13 @@ const menuComponent = new MenuView();
 render(siteMainElement, menuComponent);
 
 const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
-// на время отладки
-// const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
+const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
+
+let statisticsComponent = null;
 
 const clearPage = () => {
   mainPresenter.destroy();
+  remove(statisticsComponent);
 };
 
 const handleSiteMenuClick = (menuItem) => {
@@ -46,21 +47,18 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.MOVIES:
       clearPage();
       mainPresenter.init();
-      // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
       clearPage();
-      // Показать статистику
+      statisticsComponent = new StatsView(moviesModel.movies);
+      render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
 
 menuComponent.setMenuClickHandler(handleSiteMenuClick);
 
-// Для удобства отладки скроем Фильтры и доску
-// filterPresenter.init();
-// mainPresenter.init();
-// и отобразим сразу статистику
-render(siteMainElement, new StatsView(moviesModel.movies), RenderPosition.BEFOREEND);
+filterPresenter.init();
+mainPresenter.init();
 
 render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);

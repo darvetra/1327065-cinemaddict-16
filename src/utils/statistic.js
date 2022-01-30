@@ -25,7 +25,7 @@ export const getMoviesFilteredByStatisticDate = (statisticType, movies) => {
   const startDate = getStartDate(statisticType);
 
   return startDate
-    ? movies.filter((movie) => dayjs(movie.watchingDate).isAfter(startDate))
+    ? movies.filter((movie) => dayjs(movie.userDetails.watchingDate).isAfter(startDate))
     : movies;
 };
 
@@ -43,3 +43,7 @@ export const getStatisticGenres = (movies) => {
 
 export const sortGenreCountDown = (genre1, genre2) => genre1.count < genre2.count ? 1 : -1;
 
+export const getTotalDuration = (movies) => {
+  const initialValue = 0;
+  return movies.reduce((totalDuration, film) => totalDuration + film.filmInfo.runtime, initialValue);
+};

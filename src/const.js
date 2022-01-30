@@ -1,3 +1,5 @@
+export const MINUTES_IN_HOURS = 60;
+
 export const Emoji = {
   SMILE: 'smile',
   SLEEPING: 'sleeping',
@@ -38,7 +40,7 @@ export const MenuItem = {
 };
 
 export const StatisticType = {
-  ALL: 'all time',
+  ALL: 'all-time',
   TODAY: 'today',
   WEEK: 'week',
   MONTH: 'month',
