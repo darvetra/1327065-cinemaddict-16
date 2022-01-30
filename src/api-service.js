@@ -21,7 +21,7 @@ export default class ApiService {
     const response = await this.#load({
       url: `movies/${movie.id}`,
       method: Method.PUT,
-      body: JSON.stringify(movie),
+      body: JSON.stringify(this.#adaptToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -49,6 +49,38 @@ export default class ApiService {
     } catch (err) {
       ApiService.catchError(err);
     }
+  }
+
+  #adaptToServer = (movie) => {
+    const adaptedMovie = {
+      'id': movie.id,
+      'comments': movie.comments,
+      'film_info': {
+        'actors': movie.actors,
+        'age_rating': movie.ageRating,
+        'alternative_title': movie.alternativeTitle,
+        'description': movie.description,
+        'director': movie.director,
+        'genre': movie.genre,
+        'poster': movie.poster,
+        'release': {
+          'date': movie.release.date.toISOString(),
+          'release_country': movie.release.releaseCountry,
+        },
+        'runtime': movie.runtime,
+        'title': movie.title,
+        'total_rating': movie.totalRating,
+        'writers': movie.writers,
+      },
+      'user_details': {
+        'already_watched': movie.userDetails.alreadyWatched,
+        'favorite': movie.userDetails.favorite,
+        'watching_date': movie.userDetails.watchingDate.toISOString(),
+        'watchlist': movie.userDetails.watchlist,
+      },
+    };
+
+    return adaptedMovie;
   }
 
   static parseResponse = (response) => response.json();
