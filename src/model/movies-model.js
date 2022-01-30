@@ -7,25 +7,15 @@ export default class MoviesModel extends AbstractObservable {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
-
-    this.#apiService.movies.then((movies) => {
-      // eslint-disable-next-line no-console
-      console.log('до адаптации', movies);
-      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-      // а ещё на сервере используется snake_case, а у нас camelCase.
-      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-      // Есть вариант получше - паттерн "Адаптер"
-      // eslint-disable-next-line no-console
-      console.log('после адаптации', movies.map(this.#adaptToClient));
-    });
-  }
-
-  set movies(movies) {
-    this.#movies = [...movies];
   }
 
   get movies() {
     return this.#movies;
+  }
+
+  init = async () => {
+    const movies = await this.#apiService.movies;
+    this.#movies = movies.map(this.#adaptToClient);
   }
 
   updateMovie = (updateType, update) => {
