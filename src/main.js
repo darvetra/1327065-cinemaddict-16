@@ -12,13 +12,17 @@ import StatsView from './view/stats-view';
 import MainPresenter from './presenter/main-presenter';
 import FilterPresenter from './presenter/filter-presenter';
 
+import ApiService from './api-service.js';
+
 import {generateMovie} from './mock/movie';
 
 const MOVIE_COUNT = 20;
+const AUTHORIZATION = 'Basic gogol-mogol';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
 
 const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
 
-const moviesModel = new MoviesModel();
+const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
 moviesModel.movies = movies;
 
 const filterModel = new FilterModel();

@@ -1,7 +1,22 @@
 import AbstractObservable from '../utils/abstract-observable.js';
 
 export default class MoviesModel extends AbstractObservable {
+  #apiService = null;
   #movies = [];
+
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
+
+    this.#apiService.movies.then((movies) => {
+      // eslint-disable-next-line no-console
+      console.log(movies);
+      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+      // а ещё на сервере используется snake_case, а у нас camelCase.
+      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+      // Есть вариант получше - паттерн "Адаптер"
+    });
+  }
 
   set movies(movies) {
     this.#movies = [...movies];
