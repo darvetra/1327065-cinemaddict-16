@@ -1,19 +1,28 @@
 import SmartView from './smart-view';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {getMoviesFilteredByStatisticDate, getStatisticGenres, sortGenreCountDown} from '../utils/statistic';
+import {StatisticType} from '../const';
 
 const BAR_HEIGHT = 50;
 
-const renderChart = (statisticCtx) => {
+const renderChart = (statisticCtx, movies, statisticType) => {
   statisticCtx.height = BAR_HEIGHT * 5;
+
+  const filteredMovies = getMoviesFilteredByStatisticDate(statisticType, movies);
+  const movieGenresCounted = getStatisticGenres(filteredMovies);
+  const sortedMovieGenres = movieGenresCounted.sort(sortGenreCountDown);
+
+  const movieGenres = sortedMovieGenres.map((item) => item.item);
+  const moviesByGenreEntity = sortedMovieGenres.map((genre) => genre.count);
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['Sci-Fi', 'Animation', 'Fantasy', 'Comedy', 'TV Series'],
+      labels: movieGenres,
       datasets: [{
-        data: [11, 8, 7, 4, 3],
+        data: moviesByGenreEntity,
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
         anchor: 'start',
@@ -117,12 +126,14 @@ const createStatsTemplate = () => (`<section class="statistic">
 
 export default class StatsView extends SmartView {
   #chart = null;
+  #statisticType = StatisticType.ALL
 
   constructor(movies) {
     super();
 
     this._data = {
       movies,
+      statisticType: this.#statisticType
     };
 
     this.#setCharts();
@@ -146,9 +157,9 @@ export default class StatsView extends SmartView {
   }
 
   #setCharts = () => {
-    const {movies} = this._data;
+    const {movies, statisticType} = this._data;
     const statisticCtx = this.element.querySelector('.statistic__chart');
 
-    this.#chart = renderChart(statisticCtx, movies);
+    this.#chart = renderChart(statisticCtx, movies, statisticType);
   }
 }

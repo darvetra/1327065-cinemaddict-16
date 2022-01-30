@@ -36,3 +36,11 @@ export const MenuItem = {
   MOVIES: 'MOVIES',
   STATISTICS: 'STATISTICS',
 };
+
+export const StatisticType = {
+  ALL: 'all time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
