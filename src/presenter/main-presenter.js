@@ -11,6 +11,7 @@ import NoFilmsView from '../view/no-films-view';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
+import LoadingView from '../view/loading-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
 
@@ -21,6 +22,7 @@ export default class MainPresenter {
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
+  #loadingComponent = new LoadingView();
   #noMoviesComponent = null;
   #sortComponent = null;
   #showMoreButtonComponent = null;
@@ -29,6 +31,7 @@ export default class MainPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   constructor(mainContainer, moviesModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -103,6 +106,11 @@ export default class MainPresenter {
         this.#clearMainContainer(true, true);
         this.#renderMainContainer();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMainContainer();
+        break;
     }
   }
 
@@ -136,6 +144,10 @@ export default class MainPresenter {
 
   #renderMovieCards = (cards = this.movies, container) => {
     cards.forEach((movieCard) => this.#renderMovieCard(movieCard, container));
+  }
+
+  #renderLoading = () => {
+    render(this.#moviesSectionComponent, this.#loadingComponent);
   }
 
   #renderNoMovies = () => {
@@ -173,6 +185,7 @@ export default class MainPresenter {
     this.#moviePresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#showMoreButtonComponent);
 
     if (this.#noMoviesComponent) {
@@ -194,6 +207,11 @@ export default class MainPresenter {
   }
 
   #renderMainContainer = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     // sort
     this.#renderSort();
 
