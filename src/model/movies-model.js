@@ -22,6 +22,10 @@ export default class MoviesModel extends AbstractObservable {
       this.#movies = [];
     }
 
+
+    // eslint-disable-next-line no-console
+    console.log(this.#movies);
+
     this._notify(UpdateType.INIT);
   }
 

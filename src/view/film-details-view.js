@@ -35,19 +35,38 @@ const BLANK_MOVIE = {
 };
 
 const createCommentTemplate = (commentItem) => {
-  const {id, author, comment, date, emotion} = commentItem;
-  const time = convertHumanTime(date);
+  // временно, до момента отладки вывода комментариев
+
+  // const {id, author, comment, date, emotion} = commentItem;
+  // const time = convertHumanTime(date);
+  //
+  // return `<li class="film-details__comment">
+  //   <span class="film-details__comment-emoji">
+  //     <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+  //   </span>
+  //   <div>
+  //     <p class="film-details__comment-text">${he.encode(comment)}</p>
+  //     <p class="film-details__comment-info">
+  //       <span class="film-details__comment-author">${author}</span>
+  //       <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
+  //       <button class="film-details__comment-delete" data-id-comment="${id}">Delete</button>
+  //     </p>
+  //   </div>
+  // </li>`;
+
+  const commentId = commentItem;
+
 
   return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-">
     </span>
     <div>
-      <p class="film-details__comment-text">${he.encode(comment)}</p>
+      <p class="film-details__comment-text"></p>
       <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
-        <button class="film-details__comment-delete" data-id-comment="${id}">Delete</button>
+        <span class="film-details__comment-author"></span>
+        <span class="film-details__comment-day"></span>                         <!-- 2 days ago -->
+        <button class="film-details__comment-delete" data-id-comment="${commentId}">Delete</button>
       </p>
     </div>
   </li>`;
@@ -123,7 +142,7 @@ const createFilmDetailsTemplate = (data = {}) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
