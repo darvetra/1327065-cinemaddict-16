@@ -52,13 +52,13 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-menuComponent.setMenuClickHandler(handleSiteMenuClick);
-
-render(siteMainElement, menuComponent);
 filterPresenter.init();
 mainPresenter.init();
 
-moviesModel.init();
+moviesModel.init().finally(() => {
+  render(siteMainElement, menuComponent);
+  menuComponent.setMenuClickHandler(handleSiteMenuClick);
+});
 
 // временно закомментировал
 // render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
