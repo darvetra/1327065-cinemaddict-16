@@ -56,7 +56,7 @@ filterPresenter.init();
 mainPresenter.init();
 
 moviesModel.init().finally(() => {
-  render(siteMainElement, menuComponent);
+  render(siteMainElement, menuComponent, RenderPosition.AFTERBEGIN);
   menuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
 

@@ -29,20 +29,25 @@ export default class MoviesModel extends AbstractObservable {
     this._notify(UpdateType.INIT);
   }
 
-  updateMovie = (updateType, update) => {
+  updateMovie = async (updateType, update) => {
     const index = this.#movies.findIndex((movie) => movie.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting movie');
     }
 
-    this.#movies = [
-      ...this.#movies.slice(0, index),
-      update,
-      ...this.#movies.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
+    try {
+      const response = await this.#apiService.updateMovie(update);
+      const updateMovie = this.#adaptToClient(response);
+      this.#movies = [
+        ...this.#movies.slice(0, index),
+        updateMovie,
+        ...this.#movies.slice(index + 1),
+      ];
+      this._notify(updateType, updateMovie);
+    } catch(err) {
+      throw new Error('Can\'t update movie');
+    }
   }
 
   #adaptToClient = (movie) => {
