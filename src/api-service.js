@@ -27,9 +27,7 @@ export default class ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   }
 
   #load = async ({
@@ -61,8 +59,7 @@ export default class ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   }
 
   deleteComment = async (data) => {
@@ -81,21 +78,21 @@ export default class ApiService {
       'id': movie.id,
       'comments': movie.comments,
       'film_info': {
-        'actors': movie.actors,
-        'age_rating': movie.ageRating,
-        'alternative_title': movie.alternativeTitle,
-        'description': movie.description,
-        'director': movie.director,
-        'genre': movie.genre,
-        'poster': movie.poster,
+        'actors': movie.filmInfo.actors,
+        'age_rating': movie.filmInfo.ageRating,
+        'alternative_title': movie.filmInfo.alternativeTitle,
+        'description': movie.filmInfo.description,
+        'director': movie.filmInfo.director,
+        'genre': movie.filmInfo.genre,
+        'poster': movie.filmInfo.poster,
         'release': {
-          'date': movie.release.date.toISOString(),
-          'release_country': movie.release.releaseCountry,
+          'date': movie.filmInfo.release.date.toISOString(),
+          'release_country': movie.filmInfo.release.releaseCountry,
         },
-        'runtime': movie.runtime,
-        'title': movie.title,
-        'total_rating': movie.totalRating,
-        'writers': movie.writers,
+        'runtime': movie.filmInfo.runtime,
+        'title': movie.filmInfo.title,
+        'total_rating': movie.filmInfo.totalRating,
+        'writers': movie.filmInfo.writers,
       },
       'user_details': {
         'already_watched': movie.userDetails.alreadyWatched,
