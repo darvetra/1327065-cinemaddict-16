@@ -7,7 +7,7 @@ import CommentsModel from './model/comments-model';
 
 import HeaderProfileView from './view/header-profile-view';
 import MenuView from './view/menu-view';
-// import FooterStatisticsView from './view/footer-statistics-view';
+import FooterStatisticsView from './view/footer-statistics-view';
 import StatsView from './view/stats-view';
 
 import MainPresenter from './presenter/main-presenter';
@@ -21,7 +21,7 @@ const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
-// const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
+const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
 const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
@@ -60,7 +60,7 @@ mainPresenter.init();
 moviesModel.init().finally(() => {
   render(siteMainElement, menuComponent, RenderPosition.AFTERBEGIN);
   menuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
 
-// временно закомментировал
-// render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
+  const movies = moviesModel.movies;
+  render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
+});
