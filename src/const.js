@@ -25,6 +25,8 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  LOAD_COMMENTS: 'LOAD_COMMENTS',
 };
 
 export const FilterType = {

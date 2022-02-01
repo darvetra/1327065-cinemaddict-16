@@ -6,34 +6,6 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import he from 'he';
 
-const BLANK_MOVIE = {
-  id: 0,
-  comments: [],
-  filmInfo: {
-    title: '',
-    alternativeTitle: '',
-    totalRating: 0,
-    poster: '',
-    ageRating: 0,
-    director: '',
-    writers: [],
-    actors: [],
-    release: {
-      date: null,
-      releaseCountry: '',
-    },
-    runtime: 0,
-    genre: '',
-    description: '',
-  },
-  userDetails: {
-    watchlist: false,
-    alreadyWatched: false,
-    watchingDate: null,
-    favorite: false,
-  },
-};
-
 const createCommentTemplate = (commentItem) => {
   const {id, author, comment, date, emotion} = commentItem;
   const time = convertHumanTime(date);
@@ -73,8 +45,8 @@ const createEmojisListTemplate = (currentEmoji) => (
 
 const createEmojiLabelTemplate = (currentEmoji) => `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">`;
 
-const createFilmDetailsTemplate = (data = {}) => {
-  const {filmInfo, comments, userDetails, commentEmotion, textComment} = data;
+const createFilmDetailsTemplate = (movie = {}, comments) => {
+  const {filmInfo, userDetails, commentEmotion, textComment} = movie;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
@@ -123,7 +95,7 @@ const createFilmDetailsTemplate = (data = {}) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
@@ -212,15 +184,18 @@ const createFilmDetailsTemplate = (data = {}) => {
 };
 
 export default class FilmDetailsView extends SmartView {
-  constructor(movie = BLANK_MOVIE) {
+  #comments = [];
+
+  constructor(movie, comments) {
     super();
     this._data = FilmDetailsView.parseMovieToData(movie);
+    this.#comments = comments;
 
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createFilmDetailsTemplate(this._data);
+    return createFilmDetailsTemplate(this._data, this.#comments);
   }
 
   reset = (movie) => {

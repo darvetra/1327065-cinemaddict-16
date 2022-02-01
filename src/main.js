@@ -3,6 +3,7 @@ import {MenuItem} from './const';
 
 import MoviesModel from './model/movies-model';
 import FilterModel from './model/filter-model';
+import CommentsModel from './model/comments-model';
 
 import HeaderProfileView from './view/header-profile-view';
 import MenuView from './view/menu-view';
@@ -12,27 +13,24 @@ import StatsView from './view/stats-view';
 import MainPresenter from './presenter/main-presenter';
 import FilterPresenter from './presenter/filter-presenter';
 
-import {generateMovie} from './mock/movie';
+import ApiService from './api-service.js';
 
-const MOVIE_COUNT = 20;
-
-const movies = Array.from({length: MOVIE_COUNT}, generateMovie);
-
-const moviesModel = new MoviesModel();
-moviesModel.movies = movies;
-
-const filterModel = new FilterModel();
+const AUTHORIZATION = 'Basic gogol-mogol';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = bodyElement.querySelector('.header');
 const siteMainElement = bodyElement.querySelector('.main');
 const siteFooterStatisticsElement = bodyElement.querySelector('.footer__statistics');
 
+const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
+const filterModel = new FilterModel();
+const commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
+
 render(siteHeaderElement, new HeaderProfileView());
 const menuComponent = new MenuView();
-render(siteMainElement, menuComponent);
 
-const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
+const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel, commentsModel);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
 
 let statisticsComponent = null;
@@ -56,9 +54,13 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-menuComponent.setMenuClickHandler(handleSiteMenuClick);
-
 filterPresenter.init();
 mainPresenter.init();
 
-render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
+moviesModel.init().finally(() => {
+  render(siteMainElement, menuComponent, RenderPosition.AFTERBEGIN);
+  menuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+  const movies = moviesModel.movies;
+  render(siteFooterStatisticsElement, new FooterStatisticsView(movies), RenderPosition.AFTERBEGIN);
+});

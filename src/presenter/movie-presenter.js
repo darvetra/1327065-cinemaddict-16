@@ -13,6 +13,7 @@ export default class MoviePresenter {
   #movieListContainer = null;
   #changeData = null;
   #changeMode = null;
+  #commentsModel = null;
 
   #movieCardComponent = null;
   #movieDetailsComponent = null;
@@ -20,10 +21,11 @@ export default class MoviePresenter {
   #movie = null;
   #mode = Mode.DEFAULT
 
-  constructor(movieListContainer, changeData, changeMode) {
+  constructor(movieListContainer, changeData, changeMode, commentsModel) {
     this.#movieListContainer = movieListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#commentsModel = commentsModel;
   }
 
   init = (movie) => {
@@ -33,15 +35,11 @@ export default class MoviePresenter {
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
     this.#movieCardComponent = new FilmCardView(movie);
-    this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     this.#movieCardComponent.setPopupClickHandler(this.#handlePopupOpen);
     this.#movieCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
-    this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieListContainer, this.#movieCardComponent);
@@ -70,12 +68,25 @@ export default class MoviePresenter {
     }
   }
 
-  #openPopup = () => {
+  #openPopup = async () => {
+    let movieComments;
+    try {
+      movieComments = await this.#commentsModel.loadComments(this.#movie.id);
+    } catch (err) {
+      movieComments = [];
+    }
+
+    this.#movieDetailsComponent = new FilmDetailsView(this.#movie, movieComments);
+
     const bodyElement = document.querySelector('body');
     customAppendChild(bodyElement, this.#movieDetailsComponent);
     bodyElement.classList.add('hide-overflow');
     this.#changeMode();
     this.#mode = Mode.POPUP;
+
+    this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
+    this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
   };
 
   #closePopup = () => {

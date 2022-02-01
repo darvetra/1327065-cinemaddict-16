@@ -11,6 +11,7 @@ import NoFilmsView from '../view/no-films-view';
 import FilmsView from '../view/films-view';
 import FilmsListView from '../view/films-list-view';
 import ShowMoreButtonView from '../view/show-more-button-view';
+import LoadingView from '../view/loading-view';
 
 const MOVIE_COUNT_PER_STEP = 5;
 
@@ -18,9 +19,11 @@ export default class MainPresenter {
   #mainContainer = null;
   #moviesModel = null;
   #filterModel = null;
+  #commentsModel = null;
 
   #moviesSectionComponent = new FilmsView();
   #moviesListComponent = new FilmsListView();
+  #loadingComponent = new LoadingView();
   #noMoviesComponent = null;
   #sortComponent = null;
   #showMoreButtonComponent = null;
@@ -29,11 +32,13 @@ export default class MainPresenter {
   #moviePresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
-  constructor(mainContainer, moviesModel, filterModel) {
+  constructor(mainContainer, moviesModel, filterModel, commentsModel) {
     this.#mainContainer = mainContainer;
     this.#moviesModel = moviesModel;
     this.#filterModel = filterModel;
+    this.#commentsModel = commentsModel;
   }
 
   // добавим обертку над методом модели для получения фильмов, в будущем так будет удобнее получать из модели данные в презенторе
@@ -60,6 +65,7 @@ export default class MainPresenter {
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
 
     this.#renderMainContainer();
   }
@@ -72,6 +78,7 @@ export default class MainPresenter {
 
     this.#moviesModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   #handleModeChange = () => {
@@ -103,6 +110,14 @@ export default class MainPresenter {
         this.#clearMainContainer(true, true);
         this.#renderMainContainer();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMainContainer();
+        break;
+      case UpdateType.LOAD_COMMENTS:
+        // - загрузить комментарии
+        break;
     }
   }
 
@@ -129,13 +144,17 @@ export default class MainPresenter {
   }
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
-    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange);
+    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange, this.#commentsModel);
     moviePresenter.init(movie);
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
 
   #renderMovieCards = (cards = this.movies, container) => {
     cards.forEach((movieCard) => this.#renderMovieCard(movieCard, container));
+  }
+
+  #renderLoading = () => {
+    render(this.#moviesSectionComponent, this.#loadingComponent);
   }
 
   #renderNoMovies = () => {
@@ -173,6 +192,7 @@ export default class MainPresenter {
     this.#moviePresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#showMoreButtonComponent);
 
     if (this.#noMoviesComponent) {
@@ -194,6 +214,11 @@ export default class MainPresenter {
   }
 
   #renderMainContainer = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     // sort
     this.#renderSort();
 
