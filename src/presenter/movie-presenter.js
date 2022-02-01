@@ -13,6 +13,7 @@ export default class MoviePresenter {
   #movieListContainer = null;
   #changeData = null;
   #changeMode = null;
+  #commentsModel = null;
 
   #movieCardComponent = null;
   #movieDetailsComponent = null;
@@ -20,10 +21,11 @@ export default class MoviePresenter {
   #movie = null;
   #mode = Mode.DEFAULT
 
-  constructor(movieListContainer, changeData, changeMode) {
+  constructor(movieListContainer, changeData, changeMode, commentsModel) {
     this.#movieListContainer = movieListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#commentsModel = commentsModel;
   }
 
   init = (movie) => {
@@ -76,6 +78,11 @@ export default class MoviePresenter {
     bodyElement.classList.add('hide-overflow');
     this.#changeMode();
     this.#mode = Mode.POPUP;
+
+    const filmComments = this.#commentsModel.loadComments(this.#movie.id);
+
+    // eslint-disable-next-line no-console
+    console.log(filmComments);
   };
 
   #closePopup = () => {

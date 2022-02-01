@@ -3,6 +3,7 @@ import {MenuItem} from './const';
 
 import MoviesModel from './model/movies-model';
 import FilterModel from './model/filter-model';
+import CommentsModel from './model/comments-model';
 
 import HeaderProfileView from './view/header-profile-view';
 import MenuView from './view/menu-view';
@@ -24,11 +25,12 @@ const siteMainElement = bodyElement.querySelector('.main');
 
 const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
+const commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
 
 render(siteHeaderElement, new HeaderProfileView());
 const menuComponent = new MenuView();
 
-const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel);
+const mainPresenter = new MainPresenter(siteMainElement, moviesModel, filterModel, commentsModel);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, moviesModel);
 
 let statisticsComponent = null;
