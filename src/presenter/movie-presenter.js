@@ -35,15 +35,11 @@ export default class MoviePresenter {
     const prevMovieDetailsComponent = this.#movieDetailsComponent;
 
     this.#movieCardComponent = new FilmCardView(movie);
-    this.#movieDetailsComponent = new FilmDetailsView(movie);
 
     this.#movieCardComponent.setPopupClickHandler(this.#handlePopupOpen);
     this.#movieCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#movieCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#movieCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
-    this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
 
     if (prevMovieCardComponent === null || prevMovieDetailsComponent === null) {
       render(this.#movieListContainer, this.#movieCardComponent);
@@ -72,17 +68,25 @@ export default class MoviePresenter {
     }
   }
 
-  #openPopup = () => {
+  #openPopup = async () => {
+    let movieComments;
+    try {
+      movieComments = await this.#commentsModel.loadComments(this.#movie.id);
+    } catch (err) {
+      movieComments = [];
+    }
+
+    this.#movieDetailsComponent = new FilmDetailsView(this.#movie, movieComments);
+
     const bodyElement = document.querySelector('body');
     customAppendChild(bodyElement, this.#movieDetailsComponent);
     bodyElement.classList.add('hide-overflow');
     this.#changeMode();
     this.#mode = Mode.POPUP;
 
-    const filmComments = this.#commentsModel.loadComments(this.#movie.id);
-
-    // eslint-disable-next-line no-console
-    console.log(filmComments);
+    this.#movieDetailsComponent.setPopupCloseHandler(this.#handlePopupClose);
+    this.#movieDetailsComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#movieDetailsComponent.setDeleteCommentClickHandler(this.#handleDeleteComment);
   };
 
   #closePopup = () => {

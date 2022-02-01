@@ -23,9 +23,6 @@ export default class CommentsModel extends AbstractObservable {
 
     this._notify(UpdateType.LOAD_COMMENTS, {movieId: movieId});
 
-    // eslint-disable-next-line no-console
-    console.log(comments.map(this.#adaptCommentDataToClient));
-
     return comments.map(this.#adaptCommentDataToClient);
   }
 
