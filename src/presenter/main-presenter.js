@@ -117,22 +117,8 @@ export default class MainPresenter {
         break;
       case UpdateType.LOAD_COMMENTS:
         // - загрузить комментарии
-        // eslint-disable-next-line no-console
-        console.log('Комментарии загружены');
         break;
     }
-  }
-
-  // #handleCommentChange = async (actionType, updateType, update) => {
-  #handleCommentChange = async () => {
-    // switch (actionType) {
-    //   case CommentAction.DELETE:
-
-    //     break;
-    //   case CommentAction.ADD:
-
-    //     break;
-    // }
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -158,7 +144,7 @@ export default class MainPresenter {
   }
 
   #renderMovieCard = (movie, container = this.#moviesListComponent) => {
-    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange, this.#commentsModel, this.#handleCommentChange);
+    const moviePresenter = new MoviePresenter(container, this.#handleViewAction, this.#handleModeChange, this.#commentsModel);
     moviePresenter.init(movie);
     this.#moviePresenter.set(movie.id, moviePresenter);
   }
