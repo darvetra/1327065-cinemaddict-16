@@ -3,10 +3,10 @@ import {convertHumanDate, convertHumanTime, formatRunTime} from '../utils/date';
 import {EMOJIS} from '../const';
 
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
+// import {nanoid} from 'nanoid';
 import he from 'he';
 
-const createCommentTemplate = (commentItem) => {
+const createCommentTemplate = (commentItem, isDisabled, isDeleting) => {
   const {id, author, comment, date, emotion} = commentItem;
   const time = convertHumanTime(date);
 
@@ -19,13 +19,13 @@ const createCommentTemplate = (commentItem) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${time}</span>                         <!-- 2 days ago -->
-        <button class="film-details__comment-delete" data-id-comment="${id}">Delete</button>
+        <button class="film-details__comment-delete" data-id-comment="${id}" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'deleting...' : 'delete'}</button>
       </p>
     </div>
   </li>`;
 };
 
-const createEmojisListTemplate = (currentEmoji) => (
+const createEmojisListTemplate = (currentEmoji, isDisabled) => (
   EMOJIS.map((emoji) => `<input
       class="film-details__emoji-item visually-hidden"
       name="comment-emoji"
@@ -33,6 +33,7 @@ const createEmojisListTemplate = (currentEmoji) => (
       id="emoji-${emoji}"
       value="${emoji}"
       ${currentEmoji === emoji ? 'checked' : ''}
+      ${isDisabled ? 'disabled' : ''}
     />
     <label
       class="film-details__emoji-label"
@@ -46,7 +47,7 @@ const createEmojisListTemplate = (currentEmoji) => (
 const createEmojiLabelTemplate = (currentEmoji) => `<img src="images/emoji/${currentEmoji}.png" width="55" height="55" alt="emoji-${currentEmoji}">`;
 
 const createFilmDetailsTemplate = (movie = {}, comments) => {
-  const {filmInfo, userDetails, commentEmotion, textComment} = movie;
+  const {filmInfo, userDetails, commentEmotion, textComment, isDisabled, isDeleting} = movie;
   const {title, alternativeTitle, totalRating, poster, ageRating, director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
@@ -64,10 +65,10 @@ const createFilmDetailsTemplate = (movie = {}, comments) => {
 
   let commentsList = '';
   for (const comment of comments) {
-    commentsList += createCommentTemplate(comment);
+    commentsList += createCommentTemplate(comment, isDisabled, isDeleting);
   }
 
-  const emojisListTemplate = createEmojisListTemplate();
+  const emojisListTemplate = createEmojisListTemplate(commentEmotion, isDisabled);
 
   const emojiLabelTemplate = createEmojiLabelTemplate(commentEmotion);
 
@@ -170,7 +171,12 @@ const createFilmDetailsTemplate = (movie = {}, comments) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
+              <textarea
+                class="film-details__comment-input"
+                placeholder="Select reaction below and write comment here"
+                name="comment"
+                ${isDisabled ? 'disabled' : ''}
+              >${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -210,7 +216,7 @@ export default class FilmDetailsView extends SmartView {
     }
 
     const newComment = {
-      id: nanoid(),
+      // id: nanoid(),
       emotion: this._data.commentEmotion,
       comment: this._data.textComment,
       date: dayjs(),
@@ -301,6 +307,8 @@ export default class FilmDetailsView extends SmartView {
     commentEmotion: movie.commentEmotion !== undefined,
     scrollPosition: 0,
     textComment: '',
+    isDisabled: false,
+    isDeleting: false,
   });
 
   static parseDataToMovie = (data) => {
@@ -313,6 +321,8 @@ export default class FilmDetailsView extends SmartView {
     delete movie.commentEmotion;
     delete movie.scrollPosition;
     delete movie.textComment;
+    delete movie.isDisabled;
+    delete movie.isDeleting;
 
     return movie;
   }
