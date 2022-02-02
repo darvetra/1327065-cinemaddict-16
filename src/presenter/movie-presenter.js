@@ -9,6 +9,11 @@ const Mode = {
   POPUP: 'POPUP',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
+
 export default class MoviePresenter {
   #movieListContainer = null;
   #changeData = null;
@@ -65,6 +70,27 @@ export default class MoviePresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#movieDetailsComponent.reset(this.#movie);
       this.#closePopup();
+    }
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    switch (state) {
+      case State.SAVING:
+        this.#movieDetailsComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#movieDetailsComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
     }
   }
 
